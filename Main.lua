@@ -47,27 +47,28 @@ local Section = PlayerTab:CreateSection("Main")
 -- Speed
 local Players = game:GetService("Players")
 local localPlayer = Players.LocalPlayer
+
 local SpeedValue = 16
 local SpeedEnabled = false
 
--- fungsi untuk apply speed
-local function applySpeed(humanoid)
-    if humanoid then
-        if SpeedEnabled then
-            humanoid.WalkSpeed = SpeedValue
-        else
-            humanoid.WalkSpeed = 16
+-- Fungsi untuk apply speed ke humanoid
+local function applySpeed()
+    local character = localPlayer.Character
+    if character then
+        local humanoid = character:FindFirstChildOfClass("Humanoid") or character:WaitForChild("Humanoid")
+        if humanoid then
+            humanoid.WalkSpeed = SpeedEnabled and SpeedValue or 16
         end
     end
 end
 
--- selalu jalankan saat karakter muncul / respawn
-localPlayer.CharacterAdded:Connect(function(char)
-    local humanoid = char:WaitForChild("Humanoid")
-    applySpeed(humanoid)
+-- Pastikan speed diterapkan setiap kali respawn
+localPlayer.CharacterAdded:Connect(function()
+    task.wait(0.1) -- tunggu karakter siap
+    applySpeed()
 end)
 
--- Speed Slider
+-- Slider
 local SpeedSlider = PlayerTab:CreateSlider({
     Name = "Speed",
     Range = {16, 300},
@@ -77,22 +78,20 @@ local SpeedSlider = PlayerTab:CreateSlider({
     Flag = "SpeedSlider",
     Callback = function(Value)
         SpeedValue = Value
-        local humanoid = localPlayer.Character and localPlayer.Character:FindFirstChildOfClass("Humanoid")
-        if SpeedEnabled and humanoid then
-            humanoid.WalkSpeed = SpeedValue
+        if SpeedEnabled then
+            applySpeed()
         end
     end,
 })
 
--- Speed Toggle
+-- Toggle
 local SpeedToggle = PlayerTab:CreateToggle({
     Name = "Enable Speed",
     CurrentValue = false,
     Flag = "SpeedToggle",
     Callback = function(Value)
         SpeedEnabled = Value
-        local humanoid = localPlayer.Character and localPlayer.Character:FindFirstChildOfClass("Humanoid")
-        applySpeed(humanoid)
+        applySpeed()
     end,
 })
 
