@@ -49,7 +49,7 @@ local Section = PlayerTab:CreateSection("Main")
 -- Speed
 local SpeedSlider = PlayerTab:CreateSlider({
     Name = "Speed",
-    Range = {0, 300},
+    Range = {16, 300}, -- normal minimum 16
     Increment = 1,
     Suffix = "Speed",
     CurrentValue = SpeedValue,
@@ -60,6 +60,7 @@ local SpeedSlider = PlayerTab:CreateSlider({
         local character = player.Character or player.CharacterAdded:Wait()
         local humanoid = character:FindFirstChildOfClass("Humanoid")
 
+        -- hanya ubah speed kalau toggle aktif
         if humanoid and SpeedEnabled then
             humanoid.WalkSpeed = SpeedValue
         end
@@ -73,16 +74,28 @@ local SpeedToggle = PlayerTab:CreateToggle({
     Callback = function(Value)
         SpeedEnabled = Value
         local player = game.Players.LocalPlayer
-        local character = player.Character or player.CharacterAdded:Wait()
-        local humanoid = character:FindFirstChildOfClass("Humanoid")
 
-        if humanoid then
-            if SpeedEnabled then
-                humanoid.WalkSpeed = SpeedValue
-            else
-                humanoid.WalkSpeed = 16
+        -- update setiap kali karakter muncul
+        local function applySpeed(char)
+            local humanoid = char:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                if SpeedEnabled then
+                    humanoid.WalkSpeed = SpeedValue
+                else
+                    humanoid.WalkSpeed = 16
+                end
             end
         end
+
+        if player.Character then
+            applySpeed(player.Character)
+        end
+
+        -- pastikan speed diterapkan setelah respawn
+        player.CharacterAdded:Connect(function(char)
+            task.wait(0.1) -- tunggu karakter siap
+            applySpeed(char)
+        end)
     end,
 })
 
