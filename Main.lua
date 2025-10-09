@@ -2,8 +2,6 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local JumpEnabled = false
 local JumpValue = 50
-local SpeedValue = 16
-local SpeedEnabled = false
 
 local Window = Rayfield:CreateWindow({
     Name = "GraceHub",
@@ -47,55 +45,54 @@ local PlayerTab = Window:CreateTab("🏠Home🏠")
 local Section = PlayerTab:CreateSection("Main")
 
 -- Speed
+local Players = game:GetService("Players")
+local localPlayer = Players.LocalPlayer
+local SpeedValue = 16
+local SpeedEnabled = false
+
+-- fungsi untuk apply speed
+local function applySpeed(humanoid)
+    if humanoid then
+        if SpeedEnabled then
+            humanoid.WalkSpeed = SpeedValue
+        else
+            humanoid.WalkSpeed = 16
+        end
+    end
+end
+
+-- selalu jalankan saat karakter muncul / respawn
+localPlayer.CharacterAdded:Connect(function(char)
+    local humanoid = char:WaitForChild("Humanoid")
+    applySpeed(humanoid)
+end)
+
+-- Speed Slider
 local SpeedSlider = PlayerTab:CreateSlider({
     Name = "Speed",
-    Range = {16, 300}, -- normal minimum 16
+    Range = {16, 300},
     Increment = 1,
     Suffix = "Speed",
     CurrentValue = SpeedValue,
     Flag = "SpeedSlider",
     Callback = function(Value)
         SpeedValue = Value
-        local player = game.Players.LocalPlayer
-        local character = player.Character or player.CharacterAdded:Wait()
-        local humanoid = character:FindFirstChildOfClass("Humanoid")
-
-        -- hanya ubah speed kalau toggle aktif
-        if humanoid and SpeedEnabled then
+        local humanoid = localPlayer.Character and localPlayer.Character:FindFirstChildOfClass("Humanoid")
+        if SpeedEnabled and humanoid then
             humanoid.WalkSpeed = SpeedValue
         end
     end,
 })
 
+-- Speed Toggle
 local SpeedToggle = PlayerTab:CreateToggle({
     Name = "Enable Speed",
     CurrentValue = false,
     Flag = "SpeedToggle",
     Callback = function(Value)
         SpeedEnabled = Value
-        local player = game.Players.LocalPlayer
-
-        -- update setiap kali karakter muncul
-        local function applySpeed(char)
-            local humanoid = char:FindFirstChildOfClass("Humanoid")
-            if humanoid then
-                if SpeedEnabled then
-                    humanoid.WalkSpeed = SpeedValue
-                else
-                    humanoid.WalkSpeed = 16
-                end
-            end
-        end
-
-        if player.Character then
-            applySpeed(player.Character)
-        end
-
-        -- pastikan speed diterapkan setelah respawn
-        player.CharacterAdded:Connect(function(char)
-            task.wait(0.1) -- tunggu karakter siap
-            applySpeed(char)
-        end)
+        local humanoid = localPlayer.Character and localPlayer.Character:FindFirstChildOfClass("Humanoid")
+        applySpeed(humanoid)
     end,
 })
 
