@@ -77,14 +77,14 @@ local SpeedToggle = PlayerTab:CreateToggle({
         end
 
         if SpeedEnabled then
-            SSpeedConnection = RunService.RenderStepped:Connect(function()
+            SpeedConnection = RunService.RenderStepped:Connect(function()
 			local char = player.Character
     if not char then return end
     local hrp = char:FindFirstChild("HumanoidRootPart")
     local hum = char:FindFirstChildOfClass("Humanoid")
     if not hrp or not hum then return end
 
-    local moveDir = Vector3.zero
+    local moveDir = Vector3.new(0, 0, 0)
     if userInputService:IsKeyDown(Enum.KeyCode.W) then
         moveDir += Workspace.CurrentCamera.CFrame.LookVector
     end
@@ -100,7 +100,7 @@ local SpeedToggle = PlayerTab:CreateToggle({
 
     if moveDir.Magnitude > 0 then
         moveDir = moveDir.Unit
-        hrp.CFrame = hrp.CFrame + moveDir * (SpeedValue / 100)
+        hrp.CFrame = hrp.CFrame + moveDir * (SpeedValue * deltaTime)
     end
 end)
 
