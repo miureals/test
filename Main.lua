@@ -48,7 +48,7 @@ local SpeedEnabled = false
 --speed
 local Slider = PlayerTab:CreateSlider({
    Name = "Speed",
-   Range = {0, 300},
+   Range = {16, 300},
    Increment = 1,
    Suffix = "Speed",
    CurrentValue = 16,
@@ -63,26 +63,6 @@ local Slider = PlayerTab:CreateSlider({
           humanoid.WalkSpeed = SpeedValue
       end
    end,
-})
-
-local SpeedToggle = PlayerTab:CreateToggle({
-    Name = "Enable Speed",
-    CurrentValue = false,
-    Flag = "ToggleSpeed",
-    Callback = function(Value)
-        SpeedEnabled = Value
-        local player = game.Players.LocalPlayer
-        local character = player.Character or player.CharacterAdded:Wait()
-        local humanoid = character:FindFirstChildOfClass("Humanoid")
-
-        if humanoid then
-            if SpeedEnabled then
-                humanoid.WalkSpeed = SpeedValue
-            else
-                humanoid.WalkSpeed = 16 -- reset ke normal
-            end
-        end
-    end,
 })
 
 
