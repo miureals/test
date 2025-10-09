@@ -1,7 +1,5 @@
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
-local desiredJumpPower = 50 -- Nilai default
-
 local Window = Rayfield:CreateWindow({
    Name = "GraceHub",
    Icon = 0, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
@@ -43,24 +41,25 @@ local PlayerTab = Window:CreateTab("🏠Home🏠") -- Title, Image
 local Section = PlayerTab:CreateSection("Main")
 
 --speed
-local RunService = game:GetService("RunService")
-local Players = game:GetService("Players")
-local UserInputService = game:GetService("UserInputService")
-
-local player = Players.LocalPlayer
-local SpeedValue = 16
 local SpeedEnabled = false
-local SpeedConnection = nil
+local SpeedValue = 16 -- default
 
-local SliderSpeed = PlayerTab:CreateSlider({
+local Slider = PlayerTab:CreateSlider({
    Name = "Speed",
-   Range = {16, 300},
+   Range = {0, 300},
    Increment = 1,
    Suffix = "Speed",
    CurrentValue = 16,
-   Flag = "Speedslider",
+   Flag = "Slider1",
    Callback = function(Value)
-       SpeedValue = Value
+       SpeedValue = Value -- simpan nilai slider ke variabel global
+       local player = game.Players.LocalPlayer
+       local character = player.Character or player.CharacterAdded:Wait()
+       local humanoid = character:FindFirstChildOfClass("Humanoid")
+
+       if humanoid and SpeedEnabled then
+           humanoid.WalkSpeed = SpeedValue
+       end
    end,
 })
 
@@ -70,44 +69,55 @@ local SpeedToggle = PlayerTab:CreateToggle({
     Flag = "ToggleSpeed",
     Callback = function(Value)
         SpeedEnabled = Value
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
 
-        if SpeedConnection then
-            SpeedConnection:Disconnect()
-            SpeedConnection = nil
-        end
-
-        if SpeedEnabled then
-            SpeedConnection = RunService.RenderStepped:Connect(function()
-                local char = player.Character
-                if not char then return end
-                local hrp = char:FindFirstChild("HumanoidRootPart")
-                local hum = char:FindFirstChildOfClass("Humanoid")
-                if not hrp or not hum then return end
-
-                local moveDir = Vector3.new(0,0,0)
-                local camCFrame = workspace.CurrentCamera.CFrame
-
-                if UserInputService:IsKeyDown(Enum.KeyCode.W) then
-                    moveDir += camCFrame.LookVector
-                end
-                if UserInputService:IsKeyDown(Enum.KeyCode.S) then
-                    moveDir -= camCFrame.LookVector
-                end
-                if UserInputService:IsKeyDown(Enum.KeyCode.A) then
-                    moveDir -= camCFrame.RightVector
-                end
-                if UserInputService:IsKeyDown(Enum.KeyCode.D) then
-                    moveDir += camCFrame.RightVector
-                end
-
-                if moveDir.Magnitude > 0 then
-                    moveDir = moveDir.Unit
-                    hrp.CFrame = hrp.CFrame + moveDir * SpeedValue * 0.1 -- bisa sesuaikan multiplier
-                end
-            end)
+        if humanoid then
+            if SpeedEnabled then
+                humanoid.WalkSpeed = SpeedValue
+            else
+                humanoid.WalkSpeed = 16 -- balik ke kecepatan normal
+            end
         end
     end,
 })
+--Jump boost
+
+local desiredJumpPower = 50 -- Nilai default
+
+
+‎local Slider = PlayerTab:CreateSlider({
+‎   Name = "Jump",
+‎   Range = {50, 500},
+   Increment = 10,
+‎   Suffix = "Jump",
+‎   CurrentValue = 10,
+‎   Flag = "Slider2", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+‎   Callback = function(Value)
+‎       game.Players.LocalPlayer.Character.Humanoid.JumpPower = Value
+‎end,
+‎})
+‎
+‎local JumpToggle = PlayerTab:CreateToggle({
+‎    Name = "Enable Jump",
+‎    CurrentValue = false,
+‎    Flag = "ToggleJump",
+‎    Callback = function(Value)
+‎        JumpEnabled = Value
+‎        local player = game.Players.LocalPlayer
+‎        local character = player.Character or player.CharacterAdded:Wait()
+‎        local humanoid = character:FindFirstChildOfClass("Humanoid")
+‎
+‎        if humanoid then
+‎            if Value then
+‎                humanoid.JumpPower = JumpValue
+‎            else
+‎                humanoid.JumpPower = 50 -- balik ke normal
+‎            end
+‎        end
+‎    end,
+‎})
 
 --window Misc
 local EspTab = Window:CreateTab("🛠️Misc🛠️",nil)
