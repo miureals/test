@@ -51,20 +51,21 @@ local localPlayer = Players.LocalPlayer
 local SpeedValue = 16
 local SpeedEnabled = false
 
--- Fungsi untuk apply speed ke humanoid
+-- Fungsi apply speed
 local function applySpeed()
     local character = localPlayer.Character
     if character then
         local humanoid = character:FindFirstChildOfClass("Humanoid") or character:WaitForChild("Humanoid")
         if humanoid then
+            -- Set speed: jika toggle ON → pakai slider, jika toggle OFF → default 16
             humanoid.WalkSpeed = SpeedEnabled and SpeedValue or 16
         end
     end
 end
 
--- Pastikan speed diterapkan setiap kali respawn
+-- Pastikan respawn karakter mengikuti toggle & slider
 localPlayer.CharacterAdded:Connect(function()
-    task.wait(0.1) -- tunggu karakter siap
+    task.wait(0.1)
     applySpeed()
 end)
 
@@ -78,6 +79,7 @@ local SpeedSlider = PlayerTab:CreateSlider({
     Flag = "SpeedSlider",
     Callback = function(Value)
         SpeedValue = Value
+        -- langsung update humanoid kalau toggle ON
         if SpeedEnabled then
             applySpeed()
         end
@@ -93,6 +95,7 @@ local SpeedToggle = PlayerTab:CreateToggle({
         SpeedEnabled = Value
         applySpeed()
     end,
+})
 })
 
 -- Jump boost
