@@ -82,6 +82,8 @@ local SpeedSlider = PlayerTab:CreateSlider({
         -- langsung update humanoid kalau toggle ON
         if SpeedEnabled then
             applySpeed()
+         else
+            humanoid.SpeedValue = 16
         end
     end,
 })
@@ -96,8 +98,6 @@ local SpeedToggle = PlayerTab:CreateToggle({
         applySpeed()
     end,
 })
-})
-
 -- Jump boost
 local Slider = PlayerTab:CreateSlider({
     Name = "Jump",
