@@ -41,9 +41,11 @@ local PlayerTab = Window:CreateTab("🏠Home🏠") -- Title, Image
 local Section = PlayerTab:CreateSection("Main")
 
 --speed
+-- 🟢 Tambahkan ini di atas sebelum buat slider
+local SpeedValue = 16
 local SpeedEnabled = false
-local SpeedValue = 16 -- default
 
+--speed
 local Slider = PlayerTab:CreateSlider({
    Name = "Speed",
    Range = {0, 300},
@@ -52,14 +54,14 @@ local Slider = PlayerTab:CreateSlider({
    CurrentValue = 16,
    Flag = "Slider1",
    Callback = function(Value)
-       SpeedValue = Value -- simpan nilai slider ke variabel global
-       local player = game.Players.LocalPlayer
-       local character = player.Character or player.CharacterAdded:Wait()
-       local humanoid = character:FindFirstChildOfClass("Humanoid")
+      SpeedValue = Value  -- simpan value slider
+      local player = game.Players.LocalPlayer
+      local character = player.Character or player.CharacterAdded:Wait()
+      local humanoid = character:FindFirstChildOfClass("Humanoid")
 
-       if humanoid and SpeedEnabled then
-           humanoid.WalkSpeed = SpeedValue
-       end
+      if humanoid and SpeedEnabled then
+          humanoid.WalkSpeed = SpeedValue
+      end
    end,
 })
 
@@ -77,15 +79,15 @@ local SpeedToggle = PlayerTab:CreateToggle({
             if SpeedEnabled then
                 humanoid.WalkSpeed = SpeedValue
             else
-                humanoid.WalkSpeed = 16 -- balik ke kecepatan normal
+                humanoid.WalkSpeed = 16 -- reset ke normal
             end
         end
     end,
 })
+
+
 --Jump boost
-
 local desiredJumpPower = 50 -- Nilai default
-
 
 ‎local Slider = PlayerTab:CreateSlider({
 ‎   Name = "Jump",
