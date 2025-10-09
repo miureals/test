@@ -77,36 +77,32 @@ local SpeedToggle = PlayerTab:CreateToggle({
         end
 
         if SpeedEnabled then
-            SpeedConnection = RunService.RenderStepped:Connect(function()
-            local char = player.Character 
-            if not char then return end 
-            local hrp = char:FindFirstChild("HumanoidRootPart")
-            local hum = char:FindFirstChildOfClass("Humanoid")
-            if not hrp or not hum then return end 
-        
-            local moveDir = Vector3.zero
-            if UserInputService:IsKeyDown(Enum.KeyCode.W) then
-                moveDir += Workspace.CorrentCamera.CFrame.LookVector
-            end
-            if UserInputService:IsKeyDown(Enum.KeyCode.s) then
-                moveDir -= Workspace.CorrentCamera.CFrame.LookVector
-            end
-            if userInputService:IsKeyDown(Enum.KeyCode.A) then
-                moveDir -= Workspace.CorrentCamera.CFrame.RightVector
-            end
-            if userInputService:IsKeyDown(enum.KeyCode.D) then
-                moveDir += Workspace.CorrentCamera.CFrame.RightVector
-            end
-        
-            if moveDir.Magnitude > 0 then 
-                moveDir = moveDir.Unit
-                
-                hrp.CFrame += moveDir * (SpeedValue / 100)
-            end
-        end)
+            SSpeedConnection = RunService.RenderStepped:Connect(function()
+			local char = player.Character
+    if not char then return end
+    local hrp = char:FindFirstChild("HumanoidRootPart")
+    local hum = char:FindFirstChildOfClass("Humanoid")
+    if not hrp or not hum then return end
+
+    local moveDir = Vector3.zero
+    if userInputService:IsKeyDown(Enum.KeyCode.W) then
+        moveDir += Workspace.CurrentCamera.CFrame.LookVector
     end
-end,
-})
+    if userInputService:IsKeyDown(Enum.KeyCode.S) then
+        moveDir -= Workspace.CurrentCamera.CFrame.LookVector
+    end
+    if userInputService:IsKeyDown(Enum.KeyCode.A) then
+        moveDir -= Workspace.CurrentCamera.CFrame.RightVector
+    end
+    if userInputService:IsKeyDown(Enum.KeyCode.D) then
+        moveDir += Workspace.CurrentCamera.CFrame.RightVector
+    end
+
+    if moveDir.Magnitude > 0 then
+        moveDir = moveDir.Unit
+        hrp.CFrame = hrp.CFrame + moveDir * (SpeedValue / 100)
+    end
+end)
 
 --Jump boost
 local Slider = PlayerTab:CreateSlider({
