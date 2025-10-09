@@ -45,7 +45,7 @@ local Section = PlayerTab:CreateSection("Main")
 --speed
 local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
-local userInputService = game:GetService("UserInputService")
+local UserInputService = game:GetService("UserInputService")
 
 local player = Players.LocalPlayer
 local SpeedValue = 16
@@ -58,10 +58,10 @@ local SliderSpeed = PlayerTab:CreateSlider({
    Increment = 1,
    Suffix = "Speed",
    CurrentValue = 16,
-   Flag = "Speedslider", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Flag = "Speedslider",
    Callback = function(Value)
-	SpeedValue = Value
- end,
+       SpeedValue = Value
+   end,
 })
 
 local SpeedToggle = PlayerTab:CreateToggle({
@@ -70,7 +70,7 @@ local SpeedToggle = PlayerTab:CreateToggle({
     Flag = "ToggleSpeed",
     Callback = function(Value)
         SpeedEnabled = Value
-        
+
         if SpeedConnection then
             SpeedConnection:Disconnect()
             SpeedConnection = nil
@@ -78,61 +78,33 @@ local SpeedToggle = PlayerTab:CreateToggle({
 
         if SpeedEnabled then
             SpeedConnection = RunService.RenderStepped:Connect(function()
-			local char = player.Character
-    if not char then return end
-    local hrp = char:FindFirstChild("HumanoidRootPart")
-    local hum = char:FindFirstChildOfClass("Humanoid")
-    if not hrp or not hum then return end
+                local char = player.Character
+                if not char then return end
+                local hrp = char:FindFirstChild("HumanoidRootPart")
+                local hum = char:FindFirstChildOfClass("Humanoid")
+                if not hrp or not hum then return end
 
-    local moveDir = Vector3.new(0, 0, 0)
-    if userInputService:IsKeyDown(Enum.KeyCode.W) then
-        moveDir += Workspace.CurrentCamera.CFrame.LookVector
-    end
-    if userInputService:IsKeyDown(Enum.KeyCode.S) then
-        moveDir -= Workspace.CurrentCamera.CFrame.LookVector
-    end
-    if userInputService:IsKeyDown(Enum.KeyCode.A) then
-        moveDir -= Workspace.CurrentCamera.CFrame.RightVector
-    end
-    if userInputService:IsKeyDown(Enum.KeyCode.D) then
-        moveDir += Workspace.CurrentCamera.CFrame.RightVector
-    end
+                local moveDir = Vector3.new(0,0,0)
+                local camCFrame = workspace.CurrentCamera.CFrame
 
-    if moveDir.Magnitude > 0 then
-        moveDir = moveDir.Unit
-        hrp.CFrame = hrp.CFrame + moveDir * (SpeedValue * deltaTime)
-    end
-end)
+                if UserInputService:IsKeyDown(Enum.KeyCode.W) then
+                    moveDir += camCFrame.LookVector
+                end
+                if UserInputService:IsKeyDown(Enum.KeyCode.S) then
+                    moveDir -= camCFrame.LookVector
+                end
+                if UserInputService:IsKeyDown(Enum.KeyCode.A) then
+                    moveDir -= camCFrame.RightVector
+                end
+                if UserInputService:IsKeyDown(Enum.KeyCode.D) then
+                    moveDir += camCFrame.RightVector
+                end
 
---Jump boost
-local Slider = PlayerTab:CreateSlider({
-   Name = "Jump",
-   Range = {50, 500},
-   Increment = 10,
-   Suffix = "Jump",
-   CurrentValue = 10,
-   Flag = "Slider2", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
-   Callback = function(Value)
-       game.Players.LocalPlayer.Character.Humanoid.JumpPower = Value
-end,
-})
-
-local JumpToggle = PlayerTab:CreateToggle({
-    Name = "Enable Jump",
-    CurrentValue = false,
-    Flag = "ToggleJump",
-    Callback = function(Value)
-        JumpEnabled = Value
-        local player = game.Players.LocalPlayer
-        local character = player.Character or player.CharacterAdded:Wait()
-        local humanoid = character:FindFirstChildOfClass("Humanoid")
-
-        if humanoid then
-            if Value then
-                humanoid.JumpPower = JumpValue
-            else
-                humanoid.JumpPower = 50 -- balik ke normal
-            end
+                if moveDir.Magnitude > 0 then
+                    moveDir = moveDir.Unit
+                    hrp.CFrame = hrp.CFrame + moveDir * SpeedValue * 0.1 -- bisa sesuaikan multiplier
+                end
+            end)
         end
     end,
 })
