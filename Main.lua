@@ -39,12 +39,6 @@ local Window = Rayfield:CreateWindow({
 
 local PlayerTab = Window:CreateTab("🏠Home🏠") -- Title, Image
 local Section = PlayerTab:CreateSection("Main")
-
---speed
--- 🟢 Tambahkan ini di atas sebelum buat slider
-local SpeedValue = 16
-local SpeedEnabled = false
-
 --speed
 local Slider = PlayerTab:CreateSlider({
    Name = "Speed",
@@ -54,14 +48,7 @@ local Slider = PlayerTab:CreateSlider({
    CurrentValue = 16,
    Flag = "Slider1",
    Callback = function(Value)
-      SpeedValue = Value  -- simpan value slider
-      local player = game.Players.LocalPlayer
-      local character = player.Character or player.CharacterAdded:Wait()
-      local humanoid = character:FindFirstChildOfClass("Humanoid")
-
-      if humanoid and SpeedEnabled then
-          humanoid.WalkSpeed = SpeedValue
-      end
+      SpeedValue = Value
    end,
 })
 
