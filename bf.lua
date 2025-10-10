@@ -65,35 +65,12 @@ local Slider = PlayerTab:CreateSlider({
     Flag = "Slider1",
     Callback = function(Value)
         SpeedValue = Value
-
-        if SpeedEnabled then
-            local humanoid = getHumanoid()
-            if humanoid then
-                humanoid.WalkSpeed = SpeedValue
-            end
+            local player = game.Players.LocalPlayer
+            local character = player.Character or player.CharacterAdded:Wait()
+            local humanoid = character:WaitForChild("Humanoid")
+            humanoid.WalkSpeed = Value
         end
-    end,
-})
-
--- ✅ Toggle untuk mengaktifkan speed
-local Speed = PlayerTab:CreateToggle({
-    Name = "Enable Speed",
-    CurrentValue = false,
-    Flag = "Speed",
-    Callback = function(Value)
-        SpeedEnabled = Value
-
-        local humanoid = getHumanoid()
-        if humanoid then
-            if SpeedEnabled then
-                humanoid.WalkSpeed = SpeedValue
-            else
-                humanoid.WalkSpeed = 16 -- reset ke default
-            end
-        end
-    end,
-})
-
+    })
 
     
 -- Jump boost
