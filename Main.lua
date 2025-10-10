@@ -45,59 +45,22 @@ local PlayerTab = Window:CreateTab("🏠Home🏠")
 local Section = PlayerTab:CreateSection("Main")
 
 -- Speed
-local Players = game:GetService("Players")
-local localPlayer = Players.LocalPlayer
-
-local SpeedValue = 16
-local SpeedEnabled = false
-
--- Fungsi apply speed
-local function applySpeed()
-    local character = localPlayer.Character
-    if character then
-        local humanoid = character:FindFirstChildOfClass("Humanoid") or character:WaitForChild("Humanoid")
-        if humanoid then
-            -- Set speed: jika toggle ON → pakai slider, jika toggle OFF → default 16
-            humanoid.WalkSpeed = SpeedEnabled and SpeedValue or 16
-        end
-    end
-end
-
--- Pastikan respawn karakter mengikuti toggle & slider
-localPlayer.CharacterAdded:Connect(function()
-    task.wait(0.1)
-    applySpeed()
-end)
-
--- Slider
-local SpeedSlider = PlayerTab:CreateSlider({
-    Name = "Speed",
-    Range = {16, 300},
-    Increment = 1,
-    Suffix = "Speed",
-    CurrentValue = SpeedValue,
-    Flag = "SpeedSlider",
-    Callback = function(Value)
-        SpeedValue = Value
-        -- langsung update humanoid kalau toggle ON
-        if SpeedEnabled then
-            applySpeed()
-         else
-            humanoid.SpeedValue = 16
-        end
-    end,
+local Slider = Tab:CreateSlider({
+   Name = "Slider Example",
+   Range = {0, 100},
+   Increment = 10,
+   Suffix = "Bananas",
+   CurrentValue = 10,
+   Flag = "Slider1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+    local player = game.Players.LocalPlayer
+    local char = player.Character
+    local humanoid = char:WaitForChild("humanoid")
+    humanoid .WalkSpeed = (Value)
+   end,
 })
 
--- Toggle
-local SpeedToggle = PlayerTab:CreateToggle({
-    Name = "Enable Speed",
-    CurrentValue = false,
-    Flag = "SpeedToggle",
-    Callback = function(Value)
-        SpeedEnabled = Value
-        applySpeed()
-    end,
-})
+    
 -- Jump boost
 local Slider = PlayerTab:CreateSlider({
     Name = "Jump",
