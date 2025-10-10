@@ -53,7 +53,9 @@ local Slider = PlayerTab:CreateSlider({
    CurrentValue = 10,
    Flag = "Slider1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
    Callback = function(Value)
-    game.Players.LocalPlayers.Character.humanoid.WalkSpeed = (Value)
+    local player = game.Players,LocalPlayer
+    local character = player.Character or character:WaitForChild("Humanoid") or character:WaitForChild("Humanoid")
+    humanoid.WalkSpeed = Value
    end,
 })
 
