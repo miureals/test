@@ -7,6 +7,7 @@ local Window = Rayfield:CreateWindow({
     Name = "MiuHub",
     Icon = 0, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
     LoadingTitle = "Wellcome To A Miuhub",
+    LoadingSubtitle = "This Script only for a learn",
     LoadingSubtitle = "By Miu",
     ShowText = "GraceHub", -- for mobile users to unhide rayfield, change if you'd like
     Theme = "Amethyst",
@@ -200,17 +201,6 @@ local function createNameTag(player)
     distanceLabel.Text = "[Jarak: 0 m]"
     distanceLabel.Parent = billboard
 
-    local LevelLabel = Instance.new("TextLabel")
-    LevelLabel.Size = UDim2.new(1, 0, 0, 10)
-    LevelLabel.BackgroundTransparency = 1
-    LevelLabel.TextColor3 = Color3.fromRGB(0, 200, 0)
-    LevelLabel.TextStrokeTransparency = 0.5
-    LevelLabel.Font = Enum.Font.SourceSansBold
-    LevelLabel.TextScaled = false
-    LevelLabel.TextSize = 12
-    LevelLabel.Text = "[lv: 0]"
-    LevelLabel.Parent = billboard
-
     nameTags[player] = billboard
 
     RunService.Heartbeat:Connect(function()
@@ -223,11 +213,6 @@ local function createNameTag(player)
             local dist = (player.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Magnitude
             local meter = math.floor(dist * 0.28)
             distanceLabel.Text = "[Jarak: ".. meter.."m]"
-        end
-            
-        if player.Character and player.Character:FindFirstChild("Humanoid") then
-            local humanoid = player.Character.Humanoid
-            LevelLabel.Text = string.format("[lv: %d]", math.floor(humanoid.Level))
         end
     end)
 end
