@@ -45,20 +45,54 @@ local PlayerTab = Window:CreateTab("🏠Home🏠")
 local Section = PlayerTab:CreateSection("Main")
 
 -- Speed
-local Slider = PlayerTab:CreateSlider({
-   Name = "Slider Example",
-   Range = {0, 100},
-   Increment = 10,
-   Suffix = "Bananas",
-   CurrentValue = 10,
-   Flag = "Slider1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
-   Callback = function(Value)
-    local player = game.Players.LocalPlayer
-    local char = player.Character
-    local humanoid = char:WaitForChild("humanoid")
-    humanoid .WalkSpeed = (Value)
-   end,
+local WalkSpeedToggle = PlayerTab:CreateToggle({
+    Name = "Enable WalkSpeed",
+    CurrentValue = false,
+    Flag = "WalkSpeedToggle",
+    Callback = function(Value)
+        SpeedEnabled = Value
+    end
 })
+
+local function getCharParts()
+    local char = player.Character
+    if not char then return end
+    local root = char:FindFirstChild("HumanoidRootPart")
+    local humanoid = char:FindFirstChildOfClass("Humanoid")
+    if root and humanoid then
+        return char, root, humanoid
+    end
+end
+
+local velocity = Vector3.zero
+
+RunService.RenderStepped:Connect(function(dt)
+    if not SpeedEnabled then
+        velocity = Vector3.zero
+        return
+    end
+
+    local char, root, humanoid = getCharParts()
+    if not (char and root and humanoid) then return end
+
+    local moveDir = humanoid.MoveDirection
+    if moveDir.Magnitude > 0 then
+        local targetVelocity = moveDir.Unit * SpeedValue
+        velocity = velocity:Lerp(targetVelocity, SmoothFactor)
+    else
+        velocity = velocity:Lerp(Vector3.zero, SmoothFactor * 2)
+        if velocity.Magnitude < 0.5 then
+            velocity = Vector3.zero
+        end
+    end
+    root.CFrame = root.CFrame + (velocity * dt)
+end)
+
+player.CharacterAdded:Connect(function(char)
+    char:WaitForChild("HumanoidRootPart")
+    char:WaitForChild("Humanoid")
+    velocity = Vector3.zero
+end)
 
     
 -- Jump boost
@@ -233,74 +267,3 @@ local Toggle = EspTab:CreateToggle({
         setNameTagsVisible(Value)
     end,
 })
-
--- Fly
-local bodyGyro, bodyVel
-
-local function startFly()
-    local hrp = char:FindFirstChild("HumanoidRootPart")
-    if not hrp then return end
-
-    bodyGyro = Instance.new("BodyGyro")
-    bodyGyro.P = 9e4
-    bodyGyro.MaxTorque = Vector3.new(9e9, 9e9, 9e9)
-    bodyGyro.CFrame = hrp.CFrame
-    bodyGyro.Parent = hrp
-
-    bodyVel = Instance.new("BodyVelocity")
-    bodyVel.Velocity = Vector3.zero
-    bodyVel.MaxForce = Vector3.new(9e9, 9e9, 9e9)
-    bodyVel.Parent = hrp
-
-    Flying = true
-
-    RunService.RenderStepped:Connect(function()
-        if Flying and hrp and bodyGyro and bodyVel then
-            bodyGyro.CFrame = workspace.CurrentCamera.CFrame
-            local moveDir = Vector3.zero
-
-            if UIS:IsKeyDown(Enum.KeyCode.W) then moveDir += workspace.CurrentCamera.CFrame.LookVector end
-            if UIS:IsKeyDown(Enum.KeyCode.S) then moveDir -= workspace.CurrentCamera.CFrame.LookVector end
-            if UIS:IsKeyDown(Enum.KeyCode.A) then moveDir -= workspace.CurrentCamera.CFrame.RightVector end
-            if UIS:IsKeyDown(Enum.KeyCode.D) then moveDir += workspace.CurrentCamera.CFrame.RightVector end
-            if UIS:IsKeyDown(Enum.KeyCode.Space) then moveDir += Vector3.new(0, 1, 0) end
-            if UIS:IsKeyDown(Enum.KeyCode.LeftControl) then moveDir -= Vector3.new(0, 1, 0) end
-
-            bodyVel.Velocity = moveDir * FlySpeed
-        end
-    end)
-end
-
-
-local function stopFly()
-    Flying = false
-    if bodyGyro then bodyGyro:Destroy() end
-    if bodyVel then bodyVel:Destroy() end
-end
-
--- 🪶 Fly Toggle
-local Flytoggle = EspTab:CreateToggle({
-    Name = "Enable Fly",
-    CurrentValue = false,
-    Flag = "FlyToggle",
-    Callback = function(Value)
-        if Value then
-            startFly()
-        else
-            stopFly()
-        end
-    end
-})
-
--- ⚡ Fly Speed 
-local Flyslider = EspTab:CreateSlider({
-    Name = "Fly Speed",
-    Range = {10, 200},
-    Increment = 5,
-    Suffix = "Speed",
-    CurrentValue = FlySpeed,
-    Flag = "FlySpeed",
-    Callback = function(Value)
-        FlySpeed = Value
-    end
- })
