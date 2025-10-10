@@ -45,7 +45,7 @@ local PlayerTab = Window:CreateTab("🏠Home🏠")
 local Section = PlayerTab:CreateSection("Main")
 
 -- Speed
-local Slider = Tab:CreateSlider({
+local Slider = PlayerTab:CreateSlider({
    Name = "Slider Example",
    Range = {0, 100},
    Increment = 10,
