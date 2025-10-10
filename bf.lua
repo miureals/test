@@ -47,31 +47,38 @@ local Section = PlayerTab:CreateSection("Main")
 
 -- Speed
 local SpeedValue = 16
-local SpeedEnabled = false
 
-local function getHumanoid()
-    local player = game.Players.LocalPlayer
-    local character = player.Character or player.CharacterAdded:Wait()
-    return character:FindFirstChildOfClass("Humanoid")
-end
-
--- ✅ Slider Speed
+-- Slider WalkSpeed
 local Slider = PlayerTab:CreateSlider({
-    Name = "Speed",
-    Range = {16, 300},
-    Increment = 10,
-    Suffix = " Speed",
+    Name = "WalkSpeed",
+    Range = {16, 50}, -- aman untuk Blox Fruits
+    Increment = 1,
+    Suffix = "Speed",
     CurrentValue = 16,
-    Flag = "Slider1",
+    Flag = "WalkSpeedSlider",
     Callback = function(Value)
         SpeedValue = Value
-            local player = game.Players.LocalPlayer
-            local character = player.Character or player.CharacterAdded:Wait()
-            local humanoid = character:WaitForChild("Humanoid")
-            humanoid.WalkSpeed = Value
-        end
-    })
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoid = character:WaitForChild("Humanoid")
+        humanoid.WalkSpeed = SpeedValue
+    end
+})
 
+-- Update WalkSpeed saat respawn
+game.Players.LocalPlayer.CharacterAdded:Connect(function(char)
+    local humanoid = char:WaitForChild("Humanoid")
+    humanoid.WalkSpeed = SpeedValue
+end)
+
+-- Optional: set WalkSpeed sekarang juga, saat script dijalankan
+local player = game.Players.LocalPlayer
+if player.Character then
+    local humanoid = player.Character:FindFirstChild("Humanoid")
+    if humanoid then
+        humanoid.WalkSpeed = SpeedValue
+    end
+end
     
 -- Jump boost
 local Slider = PlayerTab:CreateSlider({
