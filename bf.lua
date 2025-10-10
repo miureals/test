@@ -2,7 +2,6 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local JumpEnabled = false
 local JumpValue = 50
-local SpeedValue = 16
 
 local Window = Rayfield:CreateWindow({
     Name = "MiuHub",
@@ -47,6 +46,15 @@ local PlayerTab = Window:CreateTab("🏠Home🏠")
 local Section = PlayerTab:CreateSection("Main")
 
 -- Speed
+local SpeedValue = 16
+local SpeedEnabled = false
+
+local function getHumanoid()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    return character:FindFirstChildOfClass("Humanoid")
+end
+
 local Slider = PlayerTab:CreateSlider({
     Name = "Speed",
     Range = {16, 300},
@@ -56,9 +64,11 @@ local Slider = PlayerTab:CreateSlider({
     Flag = "Slider1",
     Callback = function(Value)
         SpeedValue = Value
-        local humanoid = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
-        if humanoid then
-            humanoid.WalkSpeed = Value
+        if SpeedEnabled then
+            local humanoid = getHumanoid()
+            if humanoid then
+                humanoid.WalkSpeed = Value
+            end
         end
     end,
 })
@@ -69,10 +79,7 @@ local Speed = PlayerTab:CreateToggle({
     Flag = "Speed",
     Callback = function(Value)
         SpeedEnabled = Value
-        local player = game.Players.LocalPlayer
-        local character = player.Character or player.CharacterAdded:Wait()
-        local humanoid = character:FindFirstChildOfClass("Humanoid")
-
+        local humanoid = getHumanoid()
         if humanoid then
             if Value then
                 humanoid.WalkSpeed = SpeedValue
@@ -82,6 +89,7 @@ local Speed = PlayerTab:CreateToggle({
         end
     end,
 })
+
 
     
 -- Jump boost
