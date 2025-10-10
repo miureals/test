@@ -224,9 +224,10 @@ local function createNameTag(player)
             local meter = math.floor(dist * 0.28)
             distanceLabel.Text = "[Jarak: ".. meter.."m]"
         end
+            
         if player.Character and player.Character:FindFirstChild("Humanoid") then
             local humanoid = player.Character.Humanoid
-            LevelLabel.Text = string.format("[lv: 0]", math.floor(humanoid.Level))
+            LevelLabel.Text = string.format("[lv: %d]", math.floor(humanoid.Level))
         end
     end)
 end
