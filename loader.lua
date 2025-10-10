@@ -7,3 +7,4 @@ if PlaceId = 2753915549, 4442272183, 7449423635 then
 else
   Script = "https://raw.githubusercontent.com/miureals/test/refs/heads/main/Main.lua"
 end
+loadstring(game:HttpGet(Script))()
