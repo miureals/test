@@ -288,3 +288,5 @@ EspTab:CreateToggle({
         setNameTagsVisible(Value)
     end
 })
+
+local testTab = Window:CreateTab("Bloxfruit Its Sucks")
