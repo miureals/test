@@ -45,7 +45,7 @@ local PlayerTab = Window:CreateTab("🏠Home🏠")
 local Section = PlayerTab:CreateSection("Main")
 
 -- Speed
-local Slider = Tab:CreateSlider({
+local Slider = PlayerTab:CreateSlider({
    Name = "Slider Example",
    Range = {0, 100},
    Increment = 10,
@@ -279,7 +279,7 @@ local function stopFly()
 end
 
 -- 🪶 Fly Toggle
-PlayerTab:CreateToggle({
+local Flytoggle = EspTab:CreateToggle({
     Name = "Enable Fly",
     CurrentValue = false,
     Flag = "FlyToggle",
@@ -292,8 +292,8 @@ PlayerTab:CreateToggle({
     end
 })
 
--- ⚡ Fly Speed Slider
-PlayerTab:CreateSlider({
+-- ⚡ Fly Speed 
+local Flyslider = EspTab:CreateSlider({
     Name = "Fly Speed",
     Range = {10, 200},
     Increment = 5,
