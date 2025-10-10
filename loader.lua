@@ -7,6 +7,8 @@ local BloxFruit = {
 }
 local defaultScript = "https://raw.githubusercontent.com/miureals/test/refs/heads/main/Main.lua"
 
-local url = Game[PlaceId] or defaultScript
+local url = BloxFruit[PlaceId] or defaultScript
 
 loadstring(game:HttpGet(url))()
+
+print("Loading script from:", url)
