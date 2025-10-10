@@ -1,55 +1,56 @@
+-- Miuhub (GraceHub) by Miu
+-- ⚠️ For learning purpose only
+
+-- // Library
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
+-- // Services
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local player = Players.LocalPlayer
+
+-- // Utility Function
+local function getCharParts()
+    local char = player.Character
+    if not char then return end
+    local root = char:FindFirstChild("HumanoidRootPart")
+    local humanoid = char:FindFirstChildOfClass("Humanoid")
+    if root and humanoid then
+        return char, root, humanoid
+    end
+end
+
+-- // Variables
 local JumpEnabled = false
 local JumpValue = 50
 
+-- // Window
 local Window = Rayfield:CreateWindow({
     Name = "GraceHub",
-    Icon = 0, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
-    LoadingTitle = "Wellcome",
+    Icon = 0,
+    LoadingTitle = "Welcome to GraceHub",
     LoadingSubtitle = "By Miu",
-    ShowText = "GraceHub", -- for mobile users to unhide rayfield, change if you'd like
+    ShowText = "GraceHub",
     Theme = "Amethyst",
-
-    ToggleUIKeybind = "K", -- The keybind to toggle the UI visibility
-
+    ToggleUIKeybind = "K",
     DisableRayfieldPrompts = false,
-    DisableBuildWarnings = false, -- Prevents Rayfield warnings when version mismatch
-
     ConfigurationSaving = {
         Enabled = false,
         FolderName = nil,
         FileName = "Big Hub"
     },
-
-    Discord = {
-        Enabled = false,
-        Invite = "noinvitelink",
-        RememberJoins = true
-    },
-
     KeySystem = false,
-    KeySettings = {
-        Title = "Untitled",
-        Subtitle = "Key System",
-        Note = "No method of obtaining the key is provided",
-        FileName = "Key",
-        SaveKey = true,
-        GrabKeyFromSite = false,
-        Key = {"Hello"}
-    }
 })
 
--- Home Tab
+-- 🏠 HOME TAB
 local PlayerTab = Window:CreateTab("🏠Home🏠")
-local Section = PlayerTab:CreateSection("Main")
+PlayerTab:CreateSection("Main")
 
--- 🏃‍♂️ General WalkSpeed System (anti slip + anti noclip)
+-- 🏃 WALK SPEED SYSTEM (No Slip + Anti-Noclip)
 local SpeedEnabled = false
 local SpeedValue = 16
 local DefaultSpeed = 16
 
--- Slider Speed
 local WalkSpeedSlider = PlayerTab:CreateSlider({
     Name = "WalkSpeed",
     Range = {16, 300},
@@ -68,7 +69,6 @@ local WalkSpeedSlider = PlayerTab:CreateSlider({
     end
 })
 
--- Toggle Speed
 local WalkSpeedToggle = PlayerTab:CreateToggle({
     Name = "Enable WalkSpeed",
     CurrentValue = false,
@@ -86,7 +86,7 @@ local WalkSpeedToggle = PlayerTab:CreateToggle({
     end
 })
 
--- Menjaga agar selalu stabil (kalau game ubah speed secara paksa)
+-- Menjaga kecepatan tetap stabil
 RunService.Heartbeat:Connect(function()
     if SpeedEnabled then
         local _, _, humanoid = getCharParts()
@@ -96,7 +96,7 @@ RunService.Heartbeat:Connect(function()
     end
 end)
 
--- Reset speed kalau character respawn
+-- Reset speed saat respawn
 player.CharacterAdded:Connect(function(char)
     char:WaitForChild("Humanoid")
     local humanoid = char:FindFirstChildOfClass("Humanoid")
@@ -105,19 +105,18 @@ player.CharacterAdded:Connect(function(char)
     end
 end)
 
-    
--- Jump boost
-local Slider = PlayerTab:CreateSlider({
-    Name = "Jump",
+-- 🦘 Jump Power System
+local JumpSlider = PlayerTab:CreateSlider({
+    Name = "Jump Power",
     Range = {50, 500},
     Increment = 10,
     Suffix = "Jump",
     CurrentValue = 50,
-    Flag = "Slider2",
+    Flag = "SliderJump",
     Callback = function(Value)
         JumpValue = Value
-        local humanoid = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
-        if humanoid then
+        local _, _, humanoid = getCharParts()
+        if humanoid and JumpEnabled then
             humanoid.JumpPower = Value
         end
     end,
@@ -129,29 +128,27 @@ local JumpToggle = PlayerTab:CreateToggle({
     Flag = "ToggleJump",
     Callback = function(Value)
         JumpEnabled = Value
-        local player = game.Players.LocalPlayer
-        local character = player.Character or player.CharacterAdded:Wait()
-        local humanoid = character:FindFirstChildOfClass("Humanoid")
-
+        local _, _, humanoid = getCharParts()
         if humanoid then
-            if Value then
-                humanoid.JumpPower = JumpValue
-            else
-                humanoid.JumpPower = 50
-            end
+            humanoid.JumpPower = Value and JumpValue or 50
         end
     end,
 })
 
--- Misc Tab
+RunService.Heartbeat:Connect(function()
+    if JumpEnabled then
+        local _, _, humanoid = getCharParts()
+        if humanoid and humanoid.JumpPower ~= JumpValue then
+            humanoid.JumpPower = JumpValue
+        end
+    end
+end)
+
+-- 🛠️ MISC TAB (ESP)
 local EspTab = Window:CreateTab("🛠️Misc🛠️")
-local Section = EspTab:CreateSection("Misc")
+EspTab:CreateSection("Player ESP")
 
--- ESP Player
-local Players = game:GetService("Players")
 local localPlayer = Players.LocalPlayer
-local RunService = game:GetService("RunService")
-
 local nameTags = {}
 local showNameTags = false
 
@@ -184,20 +181,12 @@ local function createNameTag(player)
     billboard.Enabled = showNameTags
     billboard.Parent = head
 
-    local layout = Instance.new("UIListLayout")
-    layout.Parent = billboard
-    layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-    layout.VerticalAlignment = Enum.VerticalAlignment.Top
-    layout.SortOrder = Enum.SortOrder.LayoutOrder
-    layout.Padding = UDim.new(0, 2)
-
     local nameLabel = Instance.new("TextLabel")
     nameLabel.Size = UDim2.new(1, 0, 0, 15)
     nameLabel.BackgroundTransparency = 1
     nameLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
     nameLabel.TextStrokeTransparency = 0.5
     nameLabel.Font = Enum.Font.SourceSansBold
-    nameLabel.TextScaled = false
     nameLabel.TextSize = 16
     nameLabel.Text = "[" .. player.Name .. "]"
     nameLabel.Parent = billboard
@@ -208,7 +197,6 @@ local function createNameTag(player)
     healthLabel.TextColor3 = Color3.fromRGB(0, 200, 0)
     healthLabel.TextStrokeTransparency = 0.5
     healthLabel.Font = Enum.Font.SourceSansBold
-    healthLabel.TextScaled = false
     healthLabel.TextSize = 16
     healthLabel.Text = "[Hp: 0]"
     healthLabel.Parent = billboard
@@ -219,7 +207,6 @@ local function createNameTag(player)
     distanceLabel.TextColor3 = Color3.fromRGB(255, 255, 0)
     distanceLabel.TextStrokeTransparency = 0.5
     distanceLabel.Font = Enum.Font.SourceSansBold
-    distanceLabel.TextScaled = false
     distanceLabel.TextSize = 16
     distanceLabel.Text = "[Jarak: 0 m]"
     distanceLabel.Parent = billboard
@@ -231,7 +218,6 @@ local function createNameTag(player)
             local humanoid = player.Character.Humanoid
             healthLabel.Text = string.format("[Hp: %d]", math.floor(humanoid.Health))
         end
-
         if player.Character and player.Character:FindFirstChild("HumanoidRootPart") and localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
             local dist = (player.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Magnitude
             local meter = math.floor(dist * 0.28)
@@ -247,14 +233,10 @@ local function removeNameTag(player)
     end
 end
 
-local function onCharacterAdded(player)
-    task.wait(1)
-    createNameTag(player)
-end
-
 local function onPlayerAdded(player)
     player.CharacterAdded:Connect(function()
-        onCharacterAdded(player)
+        task.wait(1)
+        createNameTag(player)
     end)
     if player.Character then
         createNameTag(player)
@@ -270,7 +252,7 @@ end
 Players.PlayerAdded:Connect(onPlayerAdded)
 Players.PlayerRemoving:Connect(removeNameTag)
 
-local Toggle = EspTab:CreateToggle({
+EspTab:CreateToggle({
     Name = "Esp Player",
     CurrentValue = false,
     Flag = "EspPlayer",
