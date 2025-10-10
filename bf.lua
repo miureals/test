@@ -43,7 +43,7 @@ local SectionHome = PlayerTab:CreateSection("Main")
 -- Variables
 local SpeedEnabled = false
 local SpeedValue = 16
-local SmoothFactor = 0.25 -- semakin tinggi semakin cepat mengikuti arah, 0.1 = lembut, 0.3 = cepat
+local SmoothFactor = 0.1 -- semakin tinggi semakin cepat mengikuti arah, 0.1 = lembut, 0.3 = cepat
 
 -- Slider untuk Speed
 local WalkSpeedSlider = PlayerTab:CreateSlider({
