@@ -54,6 +54,17 @@ local WalkSpeedToggle = PlayerTab:CreateToggle({
     end
 })
 
+local SpeedSlider = PlayerTab:CreateSlider({
+    Name = "Walk Speed",
+    Range = {16, 300},
+    Increment = 1,
+    Suffix = "Speed",
+    CurrentValue = 16,
+    Callback = function(Value)
+        SpeedValue = Value
+    end
+})
+
 local function getCharParts()
     local char = player.Character
     if not char then return end
