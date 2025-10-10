@@ -61,10 +61,10 @@ local Slider = PlayerTab:CreateSlider({
     end,
 })
 
-local JumpToggle = PlayerTab:CreateToggle({
+local Speed = PlayerTab:CreateToggle({
     Name = "Enable Speed",
     CurrentValue = false,
-    Flag = "ToggleSpeed",
+    Flag = "Speed",
     Callback = function(Value)
         SpeedEnabled = Value
         local player = game.Players.LocalPlayer
