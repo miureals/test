@@ -44,17 +44,19 @@ local Window = Rayfield:CreateWindow({
 -- Home Tab
 local PlayerTab = Window:CreateTab("🏠Home🏠")
 local Section = PlayerTab:CreateSection("Main")
-
--- Speed
-local SpeedValue = 16
-local RunService = game:GetService("RunService")
+-- Services
 local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
 local player = Players.LocalPlayer
 
--- Slider WalkSpeed
+-- Default values
+local SpeedValue = 16
+local SpeedEnabled = false
+
+-- UI - WalkSpeed Slider
 local Slider = PlayerTab:CreateSlider({
     Name = "WalkSpeed",
-    Range = {16, 50}, -- batas aman Blox Fruits
+    Range = {16, 300}, -- batas max speed
     Increment = 1,
     Suffix = "Speed",
     CurrentValue = 16,
@@ -64,27 +66,36 @@ local Slider = PlayerTab:CreateSlider({
     end
 })
 
--- Fungsi untuk apply WalkSpeed
-local function ApplySpeedLoop()
+-- UI - WalkSpeed Toggle
+local Toggle = PlayerTab:CreateToggle({
+    Name = "Enable WalkSpeed",
+    CurrentValue = false,
+    Flag = "WalkSpeedToggle",
+    Callback = function(Value)
+        SpeedEnabled = Value
+    end
+})
+
+-- Fungsi loop untuk set WalkSpeed jika toggle aktif
+task.spawn(function()
     while true do
         task.wait(0.1)
-        local character = player.Character
-        if character then
-            local humanoid = character:FindFirstChildWhichIsA("Humanoid")
-            if humanoid and humanoid.WalkSpeed ~= SpeedValue then
-                humanoid.WalkSpeed = SpeedValue
+        if SpeedEnabled then
+            local character = player.Character
+            if character then
+                local humanoid = character:FindFirstChildWhichIsA("Humanoid")
+                if humanoid and humanoid.WalkSpeed ~= SpeedValue then
+                    humanoid.WalkSpeed = SpeedValue
+                end
             end
         end
     end
-end
+end)
 
--- Jalankan loop di background
-task.spawn(ApplySpeedLoop)
-
--- Ulangi saat respawn
+-- Atur ulang speed saat respawn
 player.CharacterAdded:Connect(function(char)
     char:WaitForChild("Humanoid")
-    -- speed akan diatur oleh loop secara otomatis
+    -- Tidak perlu atur langsung, loop akan handle
 end)
 
     
