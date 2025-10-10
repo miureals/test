@@ -46,17 +46,39 @@ local Section = PlayerTab:CreateSection("Main")
 
 -- Speed
 local Slider = PlayerTab:CreateSlider({
-   Name = "Slider Example",
-   Range = {0, 100},
-   Increment = 10,
-   Suffix = "Bananas",
-   CurrentValue = 10,
-   Flag = "Slider1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
-   Callback = function(Value)
-    local player = game.Players,LocalPlayer
-    local character = player.Character or character:WaitForChild("Humanoid") or character:WaitForChild("Humanoid")
-    humanoid.WalkSpeed = Value
-   end,
+    Name = "Speed",
+    Range = {16, 300},
+    Increment = 10,
+    Suffix = "Speed",
+    CurrentValue = 16,
+    Flag = "Slider1",
+    Callback = function(Value)
+        SpeedValue = Value
+        local humanoid = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            humanoid.WalkSpeed = Value
+        end
+    end,
+})
+
+local JumpToggle = PlayerTab:CreateToggle({
+    Name = "Enable Speed",
+    CurrentValue = false,
+    Flag = "ToggleSpeed",
+    Callback = function(Value)
+        SpeedEnabled = Value
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+
+        if humanoid then
+            if Value then
+                humanoid.WalkSpeed = SpeedValue
+            else
+                humanoid.WalkSpeed = 16
+            end
+        end
+    end,
 })
 
     
