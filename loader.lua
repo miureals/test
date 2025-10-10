@@ -1,4 +1,4 @@
---// 🌸 MiuHub Universal Loader 🌸
+--  🌸 MiuHub Universal Loader 🌸
 -- Script by Miu | only for learning 
 -- This loader will run the script that matches the placeid
 
