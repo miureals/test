@@ -7,6 +7,10 @@
 -- library
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local player = Players.LocalPlayer
+
 local JumpEnabled = false
 local JumpValue = 50
 
@@ -43,6 +47,11 @@ local Window = Rayfield:CreateWindow({
         Key = {"Hello"}
     }
 })
+
+-- Home Window
+local PlayerTab = Window:CreateTab("🏠Home🏠")
+local SectionHome = PlayerTab:CreateSection("Main")
+
 
 -- ESP TAB
 local EspTab = Window:CreateTab("🛠️Misc🛠️")
@@ -171,15 +180,6 @@ EspTab:CreateToggle({
     end
 })
 
--- Services
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local player = Players.LocalPlayer
-
--- Home Tab
-local PlayerTab = Window:CreateTab("🏠Home🏠")
-local SectionHome = PlayerTab:CreateSection("Main")
-
 -- Variables
 local SpeedEnabled = false
 local SpeedValue = 16
@@ -224,6 +224,69 @@ RunService.RenderStepped:Connect(function(dt)
     if not SpeedEnabled then
         velocity = Vector3.zero
         return
+    end
+
+    local char, root, humanoid = getCharParts()
+    if not (char and root and humanoid) then return end
+
+    local moveDir = humanoid.MoveDirection
+    if moveDir.Magnitude > 0 then
+        local targetVelocity = moveDir.Unit * SpeedValue
+        velocity = velocity:Lerp(targetVelocity, SmoothFactor)
+    else
+        velocity = velocity:Lerp(Vector3.zero, SmoothFactor * 1.5)
+    end
+
+    root.CFrame = root.CFrame + (velocity * dt)
+end)
+
+player.CharacterAdded:Connect(function(char)
+    char:WaitForChild("HumanoidRootPart")
+    char:WaitForChild("Humanoid")
+    velocity = Vector3.zero
+end)
+
+-- Jump
+local JumpSlider = PlayerTab:CreateSlider({
+    Name = "Jump",
+    Range = {50, 500},
+    Increment = 10,
+    Suffix = "Jump",
+    CurrentValue = 50,
+    Flag = "Slider2",
+    Callback = function(Value)
+        JumpValue = Value
+        local _, _, humanoid = getCharParts()
+        if humanoid then
+            pcall(function() humanoid.JumpPower = Value end)
         end
+    end
+})
+
+local JumpToggle = PlayerTab:CreateToggle({
+    Name = "Enable Jump",
+    CurrentValue = false,
+    Flag = "ToggleJump",
+    Callback = function(Value)
+        JumpEnabled = Value
+        local _, _, humanoid = getCharParts()
+        if humanoid then
+            if Value then
+                pcall(function() humanoid.JumpPower = JumpValue end)
+            else
+                pcall(function() humanoid.JumpPower = 50 end)
+            end
+        end
+    end
+})
+
+RunService.Heartbeat:Connect(function()
+    if JumpEnabled then
+        local _, _, humanoid = getCharParts()
+        if humanoid then
+            pcall(function() humanoid.JumpPower = JumpValue end)
+        end
+    end
+end)
 
 local testTab = Window:CreateTab("Bloxfruit Its Sucks")
