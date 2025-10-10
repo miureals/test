@@ -4,9 +4,9 @@ local JumpEnabled = false
 local JumpValue = 50
 
 local Window = Rayfield:CreateWindow({
-    Name = "GraceHub",
+    Name = "MiuHub",
     Icon = 0, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
-    LoadingTitle = "Wellcome",
+    LoadingTitle = "Wellcome To A Miuhub",
     LoadingSubtitle = "By Miu",
     ShowText = "GraceHub", -- for mobile users to unhide rayfield, change if you'd like
     Theme = "Amethyst",
