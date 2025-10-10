@@ -1,3 +1,4 @@
+-- MiuHub its only for learning 
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local JumpEnabled = false
@@ -5,29 +6,18 @@ local JumpValue = 50
 
 local Window = Rayfield:CreateWindow({
     Name = "MiuHub",
-    Icon = 0, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
+    Icon = 0,
     LoadingTitle = "Wellcome To A Miuhub",
     LoadingSubtitle = "This Script only for a learn",
     LoadingSubtitle = "By Miu",
-    ShowText = "GraceHub", -- for mobile users to unhide rayfield, change if you'd like
+    ShowText = "GraceHub",
     Theme = "Amethyst",
-
-    ToggleUIKeybind = "K", -- The keybind to toggle the UI visibility
-
+    ToggleUIKeybind = "K",
     DisableRayfieldPrompts = false,
-    DisableBuildWarnings = false, -- Prevents Rayfield warnings when version mismatch
+    DisableBuildWarnings = false,
 
-    ConfigurationSaving = {
-        Enabled = false,
-        FolderName = nil,
-        FileName = "Big Hub"
-    },
-
-    Discord = {
-        Enabled = false,
-        Invite = "noinvitelink",
-        RememberJoins = true
-    },
+    ConfigurationSaving = { Enabled = false, FolderName = nil, FileName = "Big Hub" },
+    Discord = { Enabled = false, Invite = "noinvitelink", RememberJoins = true },
 
     KeySystem = false,
     KeySettings = {
@@ -41,22 +31,24 @@ local Window = Rayfield:CreateWindow({
     }
 })
 
--- Home Tab
-local PlayerTab = Window:CreateTab("🏠Home🏠")
-local Section = PlayerTab:CreateSection("Main")
 -- Services
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local player = Players.LocalPlayer
 
--- Default values
-local SpeedValue = 16
-local SpeedEnabled = false
+-- Home Tab
+local PlayerTab = Window:CreateTab("🏠Home🏠")
+local SectionHome = PlayerTab:CreateSection("Main")
 
--- UI - WalkSpeed Slider
-local Slider = PlayerTab:CreateSlider({
+-- Variables
+local SpeedEnabled = false
+local SpeedValue = 16
+local SmoothFactor = 0.25 -- semakin tinggi semakin cepat mengikuti arah, 0.1 = lembut, 0.3 = cepat
+
+-- Slider untuk Speed
+local WalkSpeedSlider = PlayerTab:CreateSlider({
     Name = "WalkSpeed",
-    Range = {16, 300}, -- batas max speed
+    Range = {16, 300},
     Increment = 1,
     Suffix = "Speed",
     CurrentValue = 16,
@@ -66,8 +58,8 @@ local Slider = PlayerTab:CreateSlider({
     end
 })
 
--- UI - WalkSpeed Toggle
-local Toggle = PlayerTab:CreateToggle({
+-- Toggle untuk Speed
+local WalkSpeedToggle = PlayerTab:CreateToggle({
     Name = "Enable WalkSpeed",
     CurrentValue = false,
     Flag = "WalkSpeedToggle",
@@ -76,31 +68,49 @@ local Toggle = PlayerTab:CreateToggle({
     end
 })
 
--- Fungsi loop untuk set WalkSpeed jika toggle aktif
-task.spawn(function()
-    while true do
-        task.wait(0.1)
-        if SpeedEnabled then
-            local character = player.Character
-            if character then
-                local humanoid = character:FindFirstChildWhichIsA("Humanoid")
-                if humanoid and humanoid.WalkSpeed ~= SpeedValue then
-                    humanoid.WalkSpeed = SpeedValue
-                end
-            end
-        end
+-- Function helper
+local function getCharParts()
+    local char = player.Character
+    if not char then return end
+    local root = char:FindFirstChild("HumanoidRootPart")
+    local humanoid = char:FindFirstChildOfClass("Humanoid")
+    if root and humanoid then
+        return char, root, humanoid
     end
+end
+
+-- SMOOTH MOVEMENT LOGIC
+local velocity = Vector3.zero
+
+RunService.RenderStepped:Connect(function(dt)
+    if not SpeedEnabled then
+        velocity = Vector3.zero
+        return
+    end
+
+    local char, root, humanoid = getCharParts()
+    if not (char and root and humanoid) then return end
+
+    local moveDir = humanoid.MoveDirection
+    if moveDir.Magnitude > 0 then
+        local targetVelocity = moveDir.Unit * SpeedValue
+        velocity = velocity:Lerp(targetVelocity, SmoothFactor)
+    else
+        velocity = velocity:Lerp(Vector3.zero, SmoothFactor * 1.5)
+    end
+
+    root.CFrame = root.CFrame + (velocity * dt)
 end)
 
--- Atur ulang speed saat respawn
+-- Handle respawn
 player.CharacterAdded:Connect(function(char)
+    char:WaitForChild("HumanoidRootPart")
     char:WaitForChild("Humanoid")
-    -- Tidak perlu atur langsung, loop akan handle
+    velocity = Vector3.zero
 end)
 
-    
--- Jump boost
-local Slider = PlayerTab:CreateSlider({
+-- Jump control
+local JumpSlider = PlayerTab:CreateSlider({
     Name = "Jump",
     Range = {50, 500},
     Increment = 10,
@@ -109,11 +119,11 @@ local Slider = PlayerTab:CreateSlider({
     Flag = "Slider2",
     Callback = function(Value)
         JumpValue = Value
-        local humanoid = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+        local _, _, humanoid = getCharParts()
         if humanoid then
-            humanoid.JumpPower = Value
+            pcall(function() humanoid.JumpPower = Value end)
         end
-    end,
+    end
 })
 
 local JumpToggle = PlayerTab:CreateToggle({
@@ -122,29 +132,31 @@ local JumpToggle = PlayerTab:CreateToggle({
     Flag = "ToggleJump",
     Callback = function(Value)
         JumpEnabled = Value
-        local player = game.Players.LocalPlayer
-        local character = player.Character or player.CharacterAdded:Wait()
-        local humanoid = character:FindFirstChildOfClass("Humanoid")
-
+        local _, _, humanoid = getCharParts()
         if humanoid then
             if Value then
-                humanoid.JumpPower = JumpValue
+                pcall(function() humanoid.JumpPower = JumpValue end)
             else
-                humanoid.JumpPower = 50
+                pcall(function() humanoid.JumpPower = 50 end)
             end
         end
-    end,
+    end
 })
 
--- Misc Tab
+RunService.Heartbeat:Connect(function()
+    if JumpEnabled then
+        local _, _, humanoid = getCharParts()
+        if humanoid then
+            pcall(function() humanoid.JumpPower = JumpValue end)
+        end
+    end
+end)
+
+-- ESP TAB
 local EspTab = Window:CreateTab("🛠️Misc🛠️")
-local Section = EspTab:CreateSection("Misc")
+local SectionMisc = EspTab:CreateSection("Misc")
 
--- ESP Player
-local Players = game:GetService("Players")
 local localPlayer = Players.LocalPlayer
-local RunService = game:GetService("RunService")
-
 local nameTags = {}
 local showNameTags = false
 
@@ -224,7 +236,6 @@ local function createNameTag(player)
             local humanoid = player.Character.Humanoid
             healthLabel.Text = string.format("[Hp: %d]", math.floor(humanoid.Health))
         end
-
         if player.Character and player.Character:FindFirstChild("HumanoidRootPart") and localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
             local dist = (player.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Magnitude
             local meter = math.floor(dist * 0.28)
@@ -240,14 +251,10 @@ local function removeNameTag(player)
     end
 end
 
-local function onCharacterAdded(player)
-    task.wait(1)
-    createNameTag(player)
-end
-
 local function onPlayerAdded(player)
     player.CharacterAdded:Connect(function()
-        onCharacterAdded(player)
+        task.wait(1)
+        createNameTag(player)
     end)
     if player.Character then
         createNameTag(player)
@@ -263,11 +270,11 @@ end
 Players.PlayerAdded:Connect(onPlayerAdded)
 Players.PlayerRemoving:Connect(removeNameTag)
 
-local Toggle = EspTab:CreateToggle({
+EspTab:CreateToggle({
     Name = "Esp Player",
     CurrentValue = false,
     Flag = "EspPlayer",
     Callback = function(Value)
         setNameTagsVisible(Value)
-    end,
+    end
 })
