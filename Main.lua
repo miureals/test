@@ -148,7 +148,6 @@ end)
 local EspTab = Window:CreateTab("🛠️Misc🛠️")
 EspTab:CreateSection("Player ESP")
 
-local localPlayer = Players.LocalPlayer
 local nameTags = {}
 local showNameTags = false
 
@@ -181,12 +180,20 @@ local function createNameTag(player)
     billboard.Enabled = showNameTags
     billboard.Parent = head
 
+    local layout = Instance.new("UIListLayout")
+    layout.Parent = billboard
+    layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+    layout.VerticalAlignment = Enum.VerticalAlignment.Top
+    layout.SortOrder = Enum.SortOrder.LayoutOrder
+    layout.Padding = UDim.new(0, 2)
+
     local nameLabel = Instance.new("TextLabel")
     nameLabel.Size = UDim2.new(1, 0, 0, 15)
     nameLabel.BackgroundTransparency = 1
     nameLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
     nameLabel.TextStrokeTransparency = 0.5
     nameLabel.Font = Enum.Font.SourceSansBold
+    nameLabel.TextScaled = false
     nameLabel.TextSize = 16
     nameLabel.Text = "[" .. player.Name .. "]"
     nameLabel.Parent = billboard
@@ -197,6 +204,7 @@ local function createNameTag(player)
     healthLabel.TextColor3 = Color3.fromRGB(0, 200, 0)
     healthLabel.TextStrokeTransparency = 0.5
     healthLabel.Font = Enum.Font.SourceSansBold
+    healthLabel.TextScaled = false
     healthLabel.TextSize = 16
     healthLabel.Text = "[Hp: 0]"
     healthLabel.Parent = billboard
@@ -207,6 +215,7 @@ local function createNameTag(player)
     distanceLabel.TextColor3 = Color3.fromRGB(255, 255, 0)
     distanceLabel.TextStrokeTransparency = 0.5
     distanceLabel.Font = Enum.Font.SourceSansBold
+    distanceLabel.TextScaled = false
     distanceLabel.TextSize = 16
     distanceLabel.Text = "[Jarak: 0 m]"
     distanceLabel.Parent = billboard
@@ -258,5 +267,5 @@ EspTab:CreateToggle({
     Flag = "EspPlayer",
     Callback = function(Value)
         setNameTagsVisible(Value)
-    end,
+    end
 })
