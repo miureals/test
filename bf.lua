@@ -1,4 +1,9 @@
 -- Miuhub is only for learning, so don't misuse it.
+-- Script by Miu
+-- Library my Rayfield
+
+
+
 -- library
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
