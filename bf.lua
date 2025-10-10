@@ -1,9 +1,12 @@
--- MiuHub its only for learning 
+-- Miuhub is only for learning, so don't misuse it.
+-- library
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local JumpEnabled = false
 local JumpValue = 50
 
+
+-- window
 local Window = Rayfield:CreateWindow({
     Name = "MiuHub",
     Icon = 0,
@@ -12,13 +15,18 @@ local Window = Rayfield:CreateWindow({
     LoadingSubtitle = "By Miu",
     ShowText = "GraceHub",
     Theme = "Amethyst",
-    ToggleUIKeybind = "K",
+    ToggleUIKeybind = "K", -- key open script for Pc
     DisableRayfieldPrompts = false,
     DisableBuildWarnings = false,
+        
+-- save Configuration 
+    ConfigurationSaving = {
+      Enabled = false,
+      FolderName = nil, -- Create folder for your hub/game
+      FileName = "Big Hub"
+   },
 
-    ConfigurationSaving = { Enabled = false, FolderName = nil, FileName = "Big Hub" },
-    Discord = { Enabled = false, Invite = "noinvitelink", RememberJoins = true },
-
+-- for key sistem (if you want use key for your script change to true in "KeySystem")
     KeySystem = false,
     KeySettings = {
         Title = "Untitled",
@@ -43,7 +51,7 @@ local SectionHome = PlayerTab:CreateSection("Main")
 -- Variables
 local SpeedEnabled = false
 local SpeedValue = 16
-local SmoothFactor = 0.1 -- semakin tinggi semakin cepat mengikuti arah, 0.1 = lembut, 0.3 = cepat
+local SmoothFactor = 0.01 -- the smaller the smoother the movement 
 
 -- Slider untuk Speed
 local WalkSpeedSlider = PlayerTab:CreateSlider({
@@ -58,7 +66,7 @@ local WalkSpeedSlider = PlayerTab:CreateSlider({
     end
 })
 
--- Toggle untuk Speed
+-- Speed
 local WalkSpeedToggle = PlayerTab:CreateToggle({
     Name = "Enable WalkSpeed",
     CurrentValue = false,
@@ -68,7 +76,6 @@ local WalkSpeedToggle = PlayerTab:CreateToggle({
     end
 })
 
--- Function helper
 local function getCharParts()
     local char = player.Character
     if not char then return end
@@ -79,7 +86,6 @@ local function getCharParts()
     end
 end
 
--- SMOOTH MOVEMENT LOGIC
 local velocity = Vector3.zero
 
 RunService.RenderStepped:Connect(function(dt)
@@ -102,14 +108,13 @@ RunService.RenderStepped:Connect(function(dt)
     root.CFrame = root.CFrame + (velocity * dt)
 end)
 
--- Handle respawn
 player.CharacterAdded:Connect(function(char)
     char:WaitForChild("HumanoidRootPart")
     char:WaitForChild("Humanoid")
     velocity = Vector3.zero
 end)
 
--- Jump control
+-- Jump
 local JumpSlider = PlayerTab:CreateSlider({
     Name = "Jump",
     Range = {50, 500},
