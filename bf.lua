@@ -289,4 +289,59 @@ EspTab:CreateToggle({
     end
 })
 
+-- Services
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local player = Players.LocalPlayer
+
+-- Home Tab
+local PlayerTab = Window:CreateTab("🏠Home🏠")
+local SectionHome = PlayerTab:CreateSection("Main")
+
+-- Variables
+local SpeedEnabled = false
+local SpeedValue = 16
+local SmoothFactor = 0.01 -- the smaller the smoother the movement 
+
+-- Slider untuk Speed
+local WalkSpeedSlider = PlayerTab:CreateSlider({
+    Name = "WalkSpeed",
+    Range = {16, 300},
+    Increment = 1,
+    Suffix = "Speed",
+    CurrentValue = 16,
+    Flag = "WalkSpeedSlider",
+    Callback = function(Value)
+        SpeedValue = Value
+    end
+})
+
+-- Speed
+local WalkSpeedToggle = PlayerTab:CreateToggle({
+    Name = "Enable WalkSpeed",
+    CurrentValue = false,
+    Flag = "WalkSpeedToggle",
+    Callback = function(Value)
+        SpeedEnabled = Value
+    end
+})
+
+local function getCharParts()
+    local char = player.Character
+    if not char then return end
+    local root = char:FindFirstChild("HumanoidRootPart")
+    local humanoid = char:FindFirstChildOfClass("Humanoid")
+    if root and humanoid then
+        return char, root, humanoid
+    end
+end
+
+local velocity = Vector3.zero
+
+RunService.RenderStepped:Connect(function(dt)
+    if not SpeedEnabled then
+        velocity = Vector3.zero
+        return
+        end
+
 local testTab = Window:CreateTab("Bloxfruit Its Sucks")
