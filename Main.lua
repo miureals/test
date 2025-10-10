@@ -148,6 +148,8 @@ end)
 local EspTab = Window:CreateTab("🛠️Misc🛠️")
 EspTab:CreateSection("Player ESP")
 
+
+local localPlayer = Players.LocalPlayer
 local nameTags = {}
 local showNameTags = false
 
