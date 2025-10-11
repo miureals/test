@@ -171,7 +171,7 @@ end
 Players.PlayerAdded:Connect(onPlayerAdded)
 Players.PlayerRemoving:Connect(removeNameTag)
 
-EspTab:CreateToggle({
+local Esp = EspTab:CreateToggle({
     Name = "Esp Player",
     CurrentValue = false,
     Flag = "EspPlayer",
@@ -186,7 +186,7 @@ local SpeedValue = 16
 local SmoothFactor = 0.01 -- the smaller the smoother the movement 
 
 -- Slider untuk Speed
-local WalkSpeedSlider = PlayerTab:CreateSlider({
+local WalkSpeedSlider = EspTab:CreateSlider({
     Name = "WalkSpeed",
     Range = {16, 300},
     Increment = 1,
@@ -199,7 +199,7 @@ local WalkSpeedSlider = PlayerTab:CreateSlider({
 })
 
 -- Speed
-local WalkSpeedToggle = PlayerTab:CreateToggle({
+local WalkSpeedToggle = EspTab:CreateToggle({
     Name = "Enable WalkSpeed",
     CurrentValue = false,
     Flag = "WalkSpeedToggle",
@@ -247,7 +247,7 @@ player.CharacterAdded:Connect(function(char)
 end)
 
 -- Jump
-local JumpSlider = PlayerTab:CreateSlider({
+local JumpSlider = EspTab:CreateSlider({
     Name = "Jump",
     Range = {50, 500},
     Increment = 10,
@@ -263,7 +263,7 @@ local JumpSlider = PlayerTab:CreateSlider({
     end
 })
 
-local JumpToggle = PlayerTab:CreateToggle({
+local JumpToggle = EspTab:CreateToggle({
     Name = "Enable Jump",
     CurrentValue = false,
     Flag = "ToggleJump",
