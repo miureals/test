@@ -289,3 +289,4 @@ EspTab:CreateToggle({
     end
 })
 
+local testTab = Window:CreateTab("Bloxfruit Its Sucks")
