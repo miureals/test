@@ -162,9 +162,10 @@ RunService.Heartbeat:Connect(function()
     end
 end)
 
+-- ESP TAB
+local EspTab = Window:CreateTab("🛠️Misc🛠️")
+local SectionMisc = EspTab:CreateSection("Misc")
 
--- esp Player
-local EspTap = PlayerTab:CreateSection("Section Example")
 local localPlayer = Players.LocalPlayer
 local nameTags = {}
 local showNameTags = false
@@ -279,7 +280,7 @@ end
 Players.PlayerAdded:Connect(onPlayerAdded)
 Players.PlayerRemoving:Connect(removeNameTag)
 
-local EspToggle = EspTap:CreateToggle({
+EspTab:CreateToggle({
     Name = "Esp Player",
     CurrentValue = false,
     Flag = "EspPlayer",
@@ -287,10 +288,5 @@ local EspToggle = EspTap:CreateToggle({
         setNameTagsVisible(Value)
     end
 })
-
--- Misc TAB
-local MiscTap= Window:CreateTab("🛠️Misc🛠️")
-local SectionMisc = MiscTab:CreateSection("Misc")
-
 
 local testTab = Window:CreateTab("Bloxfruit Its Sucks")
