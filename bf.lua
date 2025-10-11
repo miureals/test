@@ -7,10 +7,6 @@
 -- library
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local player = Players.LocalPlayer
-
 local JumpEnabled = false
 local JumpValue = 50
 
@@ -48,10 +44,125 @@ local Window = Rayfield:CreateWindow({
     }
 })
 
--- Home Window
+-- Services
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local player = Players.LocalPlayer
+
+-- Home Tab
 local PlayerTab = Window:CreateTab("🏠Home🏠")
 local SectionHome = PlayerTab:CreateSection("Main")
 
+-- Variables
+local SpeedEnabled = false
+local SpeedValue = 16
+local SmoothFactor = 0.01 -- the smaller the smoother the movement 
+
+-- Slider untuk Speed
+local WalkSpeedSlider = PlayerTab:CreateSlider({
+    Name = "WalkSpeed",
+    Range = {16, 300},
+    Increment = 1,
+    Suffix = "Speed",
+    CurrentValue = 16,
+    Flag = "WalkSpeedSlider",
+    Callback = function(Value)
+        SpeedValue = Value
+    end
+})
+
+-- Speed
+local WalkSpeedToggle = PlayerTab:CreateToggle({
+    Name = "Enable WalkSpeed",
+    CurrentValue = false,
+    Flag = "WalkSpeedToggle",
+    Callback = function(Value)
+        SpeedEnabled = Value
+    end
+})
+
+local function getCharParts()
+    local char = player.Character
+    if not char then return end
+    local root = char:FindFirstChild("HumanoidRootPart")
+    local humanoid = char:FindFirstChildOfClass("Humanoid")
+    if root and humanoid then
+        return char, root, humanoid
+    end
+end
+
+local velocity = Vector3.zero
+
+RunService.RenderStepped:Connect(function(dt)
+    if not SpeedEnabled then
+        velocity = Vector3.zero
+        return
+    end
+
+    local char, root, humanoid = getCharParts()
+    if not (char and root and humanoid) then return end
+
+    local moveDir = humanoid.MoveDirection
+    if moveDir.Magnitude > 0 then
+        local targetVelocity = moveDir.Unit * SpeedValue
+        velocity = velocity:Lerp(targetVelocity, SmoothFactor)
+    else
+        velocity = velocity:Lerp(Vector3.zero, SmoothFactor * 1.5)
+    end
+
+    root.CFrame = root.CFrame + (velocity * dt)
+end)
+
+player.CharacterAdded:Connect(function(char)
+    char:WaitForChild("HumanoidRootPart")
+    char:WaitForChild("Humanoid")
+    velocity = Vector3.zero
+end)
+
+-- Jump
+local JumpSlider = PlayerTab:CreateSlider({
+    Name = "Jump",
+    Range = {50, 500},
+    Increment = 10,
+    Suffix = "Jump",
+    CurrentValue = 50,
+    Flag = "Slider2",
+    Callback = function(Value)
+        JumpValue = Value
+        local _, _, humanoid = getCharParts()
+        if humanoid then
+            pcall(function() humanoid.JumpPower = Value end)
+        end
+    end
+})
+
+local JumpToggle = PlayerTab:CreateToggle({
+    Name = "Enable Jump",
+    CurrentValue = false,
+    Flag = "ToggleJump",
+    Callback = function(Value)
+        JumpEnabled = Value
+        local _, _, humanoid = getCharParts()
+        if humanoid then
+            if Value then
+                pcall(function() humanoid.JumpPower = JumpValue end)
+            else
+                pcall(function() humanoid.JumpPower = 50 end)
+            end
+        end
+    end
+})
+
+RunService.Heartbeat:Connect(function()
+    if JumpEnabled then
+        local _, _, humanoid = getCharParts()
+        if humanoid then
+            pcall(function() humanoid.JumpPower = JumpValue end)
+        end
+    end
+end)
+
+local Section = PlayerTab:CreateSection("Section Example")
 
 -- ESP TAB
 local EspTab = Window:CreateTab("🛠️Misc🛠️")
@@ -171,7 +282,7 @@ end
 Players.PlayerAdded:Connect(onPlayerAdded)
 Players.PlayerRemoving:Connect(removeNameTag)
 
-local Esp = SectionMisc:CreateToggle({
+EspTab:CreateToggle({
     Name = "Esp Player",
     CurrentValue = false,
     Flag = "EspPlayer",
@@ -179,119 +290,5 @@ local Esp = SectionMisc:CreateToggle({
         setNameTagsVisible(Value)
     end
 })
-
-
-
-
-local localplayer = EspTab:CreateSection("Local Player")
-
--- Variables
-local SpeedEnabled = false
-local SpeedValue = 16
-local SmoothFactor = 0.01 -- the smaller the smoother the movement 
-
--- Slider untuk Speed
-local WalkSpeedSlider = localplayer:CreateSlider({
-    Name = "WalkSpeed",
-    Range = {16, 300},
-    Increment = 1,
-    Suffix = "Speed",
-    CurrentValue = 16,
-    Flag = "WalkSpeedSlider",
-    Callback = function(Value)
-        SpeedValue = Value
-    end
-})
-
--- Speed
-local WalkSpeedToggle = localplayer:CreateToggle({
-    Name = "Enable WalkSpeed",
-    CurrentValue = false,
-    Flag = "WalkSpeedToggle",
-    Callback = function(Value)
-        SpeedEnabled = Value
-    end
-})
-
-local function getCharParts()
-    local char = player.Character
-    if not char then return end
-    local root = char:FindFirstChild("HumanoidRootPart")
-    local humanoid = char:FindFirstChildOfClass("Humanoid")
-    if root and humanoid then
-        return char, root, humanoid
-    end
-end
-
-local velocity = Vector3.zero
-
-RunService.RenderStepped:Connect(function(dt)
-    if not SpeedEnabled then
-        velocity = Vector3.zero
-        return
-    end
-
-    local char, root, humanoid = getCharParts()
-    if not (char and root and humanoid) then return end
-
-    local moveDir = humanoid.MoveDirection
-    if moveDir.Magnitude > 0 then
-        local targetVelocity = moveDir.Unit * SpeedValue
-        velocity = velocity:Lerp(targetVelocity, SmoothFactor)
-    else
-        velocity = velocity:Lerp(Vector3.zero, SmoothFactor * 1.5)
-    end
-
-    root.CFrame = root.CFrame + (velocity * dt)
-end)
-
-player.CharacterAdded:Connect(function(char)
-    char:WaitForChild("HumanoidRootPart")
-    char:WaitForChild("Humanoid")
-    velocity = Vector3.zero
-end)
-
--- Jump
-local JumpSlider = localplayer:CreateSlider({
-    Name = "Jump",
-    Range = {50, 500},
-    Increment = 10,
-    Suffix = "Jump",
-    CurrentValue = 50,
-    Flag = "Slider2",
-    Callback = function(Value)
-        JumpValue = Value
-        local _, _, humanoid = getCharParts()
-        if humanoid then
-            pcall(function() humanoid.JumpPower = Value end)
-        end
-    end
-})
-
-local JumpToggle = localplayer:CreateToggle({
-    Name = "Enable Jump",
-    CurrentValue = false,
-    Flag = "ToggleJump",
-    Callback = function(Value)
-        JumpEnabled = Value
-        local _, _, humanoid = getCharParts()
-        if humanoid then
-            if Value then
-                pcall(function() humanoid.JumpPower = JumpValue end)
-            else
-                pcall(function() humanoid.JumpPower = 50 end)
-            end
-        end
-    end
-})
-
-RunService.Heartbeat:Connect(function()
-    if JumpEnabled then
-        local _, _, humanoid = getCharParts()
-        if humanoid then
-            pcall(function() humanoid.JumpPower = JumpValue end)
-        end
-    end
-end)
 
 local testTab = Window:CreateTab("Bloxfruit Its Sucks")
