@@ -37,4 +37,16 @@ local Window = Rayfield:CreateWindow({
    }
 })
 
-local Tab = Window:CreateTab("Tab Example") -- Title, Image
+local EspTab = Window:CreateTab("Tab Example") -- Title, Image
+local EspSection = EspTap:CreateSection("Main")
+
+local ESP = require(game.ReplicatedStorage:WaitForChild("function"):WaitForChild('gag_utils.lua'))
+
+EspTab:CreateToggle({
+    Name = "ESP Player",
+    CurrentValue = false,
+    Flag = "EspPlayer",
+    Callback = function(Value)
+        ESP.setVisible(Value)
+    end
+})
