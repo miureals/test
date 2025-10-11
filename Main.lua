@@ -27,7 +27,7 @@ local JumpValue = 50
 -- // Window
 local Window = Rayfield:CreateWindow({
     Name = "GraceHub",
-    Icon = 111272883332516,
+    Icon = 78684919697778,
     LoadingTitle = "Welcome to GraceHub",
     LoadingSubtitle = "By Miu",
     ShowText = "GraceHub",
@@ -46,7 +46,7 @@ local Window = Rayfield:CreateWindow({
 local PlayerTab = Window:CreateTab("🏠Home🏠")
 PlayerTab:CreateSection("Main")
 
--- 🏃 WALK SPEED SYSTEM (No Slip + Anti-Noclip)
+-- WALK SPEED SYSTEM
 local SpeedEnabled = false
 local SpeedValue = 16
 local DefaultSpeed = 16
@@ -86,7 +86,6 @@ local WalkSpeedToggle = PlayerTab:CreateToggle({
     end
 })
 
--- Menjaga kecepatan tetap stabil
 RunService.Heartbeat:Connect(function()
     if SpeedEnabled then
         local _, _, humanoid = getCharParts()
@@ -96,7 +95,6 @@ RunService.Heartbeat:Connect(function()
     end
 end)
 
--- Reset speed saat respawn
 player.CharacterAdded:Connect(function(char)
     char:WaitForChild("Humanoid")
     local humanoid = char:FindFirstChildOfClass("Humanoid")
@@ -105,7 +103,7 @@ player.CharacterAdded:Connect(function(char)
     end
 end)
 
--- 🦘 Jump Power System
+--Jump Power System
 local JumpSlider = PlayerTab:CreateSlider({
     Name = "Jump Power",
     Range = {50, 500},
