@@ -183,14 +183,15 @@ local Esp = EspTab:CreateToggle({
 
 
 
-local SectionHome = EspTab:CreateSection("Main")
+local localplayer = EspTab:CreateSection("Local Player")
+
 -- Variables
 local SpeedEnabled = false
 local SpeedValue = 16
 local SmoothFactor = 0.01 -- the smaller the smoother the movement 
 
 -- Slider untuk Speed
-local WalkSpeedSlider = EspTab:CreateSlider({
+local WalkSpeedSlider = localplayer:CreateSlider({
     Name = "WalkSpeed",
     Range = {16, 300},
     Increment = 1,
@@ -203,7 +204,7 @@ local WalkSpeedSlider = EspTab:CreateSlider({
 })
 
 -- Speed
-local WalkSpeedToggle = EspTab:CreateToggle({
+local WalkSpeedToggle = localplayer:CreateToggle({
     Name = "Enable WalkSpeed",
     CurrentValue = false,
     Flag = "WalkSpeedToggle",
@@ -251,7 +252,7 @@ player.CharacterAdded:Connect(function(char)
 end)
 
 -- Jump
-local JumpSlider = EspTab:CreateSlider({
+local JumpSlider = localplayer:CreateSlider({
     Name = "Jump",
     Range = {50, 500},
     Increment = 10,
@@ -267,7 +268,7 @@ local JumpSlider = EspTab:CreateSlider({
     end
 })
 
-local JumpToggle = EspTab:CreateToggle({
+local JumpToggle = localplayer:CreateToggle({
     Name = "Enable Jump",
     CurrentValue = false,
     Flag = "ToggleJump",
