@@ -171,7 +171,7 @@ end
 Players.PlayerAdded:Connect(onPlayerAdded)
 Players.PlayerRemoving:Connect(removeNameTag)
 
-local Esp = EspTab:CreateToggle({
+local Esp = SectionMisc:CreateToggle({
     Name = "Esp Player",
     CurrentValue = false,
     Flag = "EspPlayer",
