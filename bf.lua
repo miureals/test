@@ -180,6 +180,10 @@ local Esp = EspTab:CreateToggle({
     end
 })
 
+
+
+
+local SectionHome = EspTab:CreateSection("Main")
 -- Variables
 local SpeedEnabled = false
 local SpeedValue = 16
