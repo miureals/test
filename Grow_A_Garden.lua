@@ -42,7 +42,7 @@ local EspSection = EspTab:CreateSection("Main")
 
 local ESP = loadstring(game:HttpGet("https://raw.githubusercontent.com/miureals/test/refs/heads/main/function/gag_utils.lua"))()
 
-local esp = EspTab:CreateToggle({
+local esp = EspSection:CreateToggle({
     Name = "esp",
     CurrentValue = false,
     Flag = "Esp",
