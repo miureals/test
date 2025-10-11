@@ -40,3 +40,13 @@ local Window = Rayfield:CreateWindow({
 local EspTab = Window:CreateTab("Tab Example") -- Title, Image
 local EspSection = EspTap:CreateSection("Main")
 
+local ESP = loadstring(game:HttpGet("https://raw.githubusercontent.com/miureals/test/refs/heads/main/function/gag_utils.lua"))()
+
+local esp = EspTab:CreateToggle({
+    Name = "esp",
+    CurrentValue = false,
+    Flag = "Esp",
+    Callback = function(Value)
+        ESP.setVisible(Value)
+    end
+})
