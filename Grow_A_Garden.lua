@@ -37,16 +37,84 @@ local Window = Rayfield:CreateWindow({
    }
 })
 
-local EspTab = Window:CreateTab("Tab Example") -- Title, Image
-local EspSection = EspTab:CreateSection("Main")
+local PlayerTab = Window:CreateTab("Tab Example") -- Title, Image
+local EspSection = PlayerTab:CreateSection("Main")
 
-local ESP = loadstring(game:HttpGet("https://raw.githubusercontent.com/miureals/test/refs/heads/main/function/gag_utils.lua"))()
+-- Config toggle & slider
+local autoAttackEnabled = false
+local attackSpeed = 0.5 -- default detik per serangan
 
-local esp = EspSection:CreateToggle({
-    Name = "esp",
+-- Toggle
+local Toggle = PlayerTab:CreateToggle({
+    Name = "Auto Attack",
     CurrentValue = false,
-    Flag = "Esp",
+    Flag = "ToggleAutoAttack",
     Callback = function(Value)
-        ESP.setVisible(Value)
-    end
+        autoAttackEnabled = Value
+    end,
 })
+
+-- Slider
+local Slider = PlayerTab:CreateSlider({
+    Name = "Attack Speed",
+    Range = {0.1, 5}, -- interval detik per serangan
+    Increment = 0.1,
+    Suffix = "Seconds",
+    CurrentValue = 0.5,
+    Flag = "SliderAttackSpeed",
+    Callback = function(Value)
+        attackSpeed = Value
+    end,
+})
+
+-- Services
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
+
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+local ATTACK_RADIUS = 30
+local lastAttack = 0
+
+-- Cek apakah sedang memegang weapon
+local function isHoldingWeapon()
+    local tool = character:FindFirstChildOfClass("Tool")
+    if tool and tool:FindFirstChild("Handle") and tool.Name == "UnequippedWeapon" then
+        return tool
+    end
+    return nil
+end
+
+-- Fungsi attack NPC
+local function attackNPC(npc, damage)
+    if npc:FindFirstChild("Humanoid") then
+        npc.Humanoid:TakeDamage(damage)
+    end
+end
+
+-- Loop auto attack
+RunService.Heartbeat:Connect(function(deltaTime)
+    if not autoAttackEnabled then return end
+
+    local tool = isHoldingWeapon()
+    if tool then
+        lastAttack = lastAttack + deltaTime
+        if lastAttack >= attackSpeed then
+            lastAttack = 0
+            -- Ambil nilai damage dari weapon
+            local damageValue = tool:FindFirstChild("Damage") and tool.Damage.Value or 10
+
+            for _, npc in pairs(Workspace:GetChildren()) do
+                if npc:FindFirstChild("Humanoid") and npc:FindFirstChild("HumanoidRootPart") then
+                    local distance = (npc.HumanoidRootPart.Position - humanoidRootPart.Position).Magnitude
+                    if distance <= ATTACK_RADIUS then
+                        attackNPC(npc, damageValue)
+                    end
+                end
+            end
+        end
+    end
+end)
