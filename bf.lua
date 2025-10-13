@@ -63,7 +63,7 @@ local SectionHome = PlayerTab:CreateSection("Main")
 -- Variables
 local SpeedEnabled = false
 local SpeedValue = 16
-local SmoothFactor = 0.01 -- the smaller the smoother the movement 
+local SmoothFactor = 0 -- the smaller the smoother the movement 
 
 -- Slider untuk Speed
 local WalkSpeedSlider = PlayerTab:CreateSlider({
@@ -301,7 +301,7 @@ local test = testTab:CreateSection("test")
 local Toggle = testTab:CreateToggle({
    Name = "Toggle Test",
    CurrentValue = false,
-   Flag = "test", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Flag = "test", 
    Callback = function(Value)
             
    end,
