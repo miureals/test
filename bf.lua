@@ -298,8 +298,8 @@ EspTab:CreateToggle({
 
 local testTab = Window:CreateTab("Bloxfruit Its Sucks")
 local test = testTab:CreateSection("test")
-local Toggle = test:CreateToggle({
-   Name = "Toggle test",
+local Toggle = testTab:CreateToggle({
+   Name = "Toggle Test",
    CurrentValue = false,
    Flag = "test", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
    Callback = function(Value)
