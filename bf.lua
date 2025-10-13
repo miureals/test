@@ -26,8 +26,8 @@ local Window = Rayfield:CreateWindow({
         
 -- save Configuration 
     ConfigurationSaving = {
-      Enabled = false,
-      FolderName = nil, -- Create folder for your hub/game
+      Enabled = true,
+      FolderName = MiuHub, -- Create folder for your hub/game
       FileName = "Big Hub"
    },
 
