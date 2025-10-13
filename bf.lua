@@ -14,7 +14,7 @@ local JumpValue = 50
 -- window
 local Window = Rayfield:CreateWindow({
     Name = "MiuHub",
-    Icon = 78684919697778,
+    Icon = 126331734300608,
     LoadingTitle = "Wellcome To A Miuhub",
     LoadingSubtitle = "This Script only for a learn",
     LoadingSubtitle = "By Miu",
