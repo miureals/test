@@ -26,7 +26,7 @@ local Window = Rayfield:CreateWindow({
         
 -- save Configuration 
     ConfigurationSaving = {
-      Enabled = true,
+      Enabled = false,
       FolderName = MiuHub, -- Create folder for your hub/game
       FileName = "Big Hub"
    },
@@ -42,6 +42,13 @@ local Window = Rayfield:CreateWindow({
         GrabKeyFromSite = false,
         Key = {"Hello"}
     }
+})
+
+Rayfield:Notify({
+   Title = "MiuHub it sucks",
+   Content = "Fuck up miu hub",
+   Duration = 3,
+   Image = nil,
 })
 
 -- Services
@@ -290,4 +297,12 @@ EspTab:CreateToggle({
 })
 
 local testTab = Window:CreateTab("Bloxfruit Its Sucks")
-local Section = testTab:CreateSection("")
+local test = testTab:CreateSection("test")
+local Toggle = test:CreateToggle({
+   Name = "Toggle test",
+   CurrentValue = false,
+   Flag = "test", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+            
+   end,
+})
