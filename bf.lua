@@ -56,29 +56,23 @@ local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local player = Players.LocalPlayer
 
--- Home Tab
-local PlayerTab = Window:CreateTab("🏠Home🏠")
-local SectionHome = PlayerTab:CreateSection("Main")
-
--- Variables
-local SpeedEnabled = false
 local SpeedValue = 16
-local SmoothFactor = 0 -- the smaller the smoother the movement 
+local SpeedEnabled = false
+local SmoothFactor = 10 -- nilai smoothing (semakin besar makin responsif)
 
--- Slider untuk Speed
+-- UI
 local WalkSpeedSlider = PlayerTab:CreateSlider({
     Name = "WalkSpeed",
     Range = {16, 300},
     Increment = 1,
     Suffix = "Speed",
-    CurrentValue = 16,
+    CurrentValue = SpeedValue,
     Flag = "WalkSpeedSlider",
     Callback = function(Value)
         SpeedValue = Value
     end
 })
 
--- Speed
 local WalkSpeedToggle = PlayerTab:CreateToggle({
     Name = "Enable WalkSpeed",
     CurrentValue = false,
@@ -88,6 +82,7 @@ local WalkSpeedToggle = PlayerTab:CreateToggle({
     end
 })
 
+-- ambil bagian karakter
 local function getCharParts()
     local char = player.Character
     if not char then return end
@@ -100,6 +95,7 @@ end
 
 local velocity = Vector3.zero
 
+-- loop utama
 RunService.RenderStepped:Connect(function(dt)
     if not SpeedEnabled then
         velocity = Vector3.zero
@@ -112,14 +108,16 @@ RunService.RenderStepped:Connect(function(dt)
     local moveDir = humanoid.MoveDirection
     if moveDir.Magnitude > 0 then
         local targetVelocity = moveDir.Unit * SpeedValue
-        velocity = velocity:Lerp(targetVelocity, SmoothFactor)
+        velocity = velocity:Lerp(targetVelocity, math.clamp(SmoothFactor * dt, 0, 1))
     else
-        velocity = velocity:Lerp(Vector3.zero, SmoothFactor * 1.5)
+        velocity = velocity:Lerp(Vector3.zero, math.clamp(SmoothFactor * dt * 1.5, 0, 1))
     end
 
+    -- update posisi player
     root.CFrame = root.CFrame + (velocity * dt)
 end)
 
+-- reset velocity saat respawn
 player.CharacterAdded:Connect(function(char)
     char:WaitForChild("HumanoidRootPart")
     char:WaitForChild("Humanoid")
