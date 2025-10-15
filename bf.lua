@@ -227,7 +227,7 @@ local function createNameTag(player)
     local healthLabel = Instance.new("TextLabel")
     healthLabel.Size = UDim2.new(1, 0, 0, 20)
     healthLabel.BackgroundTransparency = 1
-    healthLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
+    healthLabel.TextColor3 = Color3.fromRGB(180, 0, 255)
     healthLabel.TextStrokeTransparency = 0.5
     healthLabel.Font = Enum.Font.SourceSansBold
     healthLabel.TextScaled = false
@@ -238,7 +238,7 @@ local function createNameTag(player)
     local distanceLabel = Instance.new("TextLabel")
     distanceLabel.Size = UDim2.new(1, 0, 0, 20)
     distanceLabel.BackgroundTransparency = 1
-    distanceLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    distanceLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
     distanceLabel.TextStrokeTransparency = 0.5
     distanceLabel.Font = Enum.Font.SourceSansBold
     distanceLabel.TextScaled = false
