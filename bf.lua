@@ -216,7 +216,7 @@ local function createNameTag(player)
     local nameLabel = Instance.new("TextLabel")
     nameLabel.Size = UDim2.new(1, 0, 0, 15)
     nameLabel.BackgroundTransparency = 1
-    nameLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
+    nameLabel.TextColor3 = Color3.fromRGB(200, 0, 0)
     nameLabel.TextStrokeTransparency = 0.5
     nameLabel.Font = Enum.Font.SourceSansBold
     nameLabel.TextScaled = false
