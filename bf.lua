@@ -51,6 +51,9 @@ Rayfield:Notify({
    Image = nil,
 })
 
+local PlayerTab = Window:CreateTab("🏠Home🏠")
+local section = PlayerTab:CreateSection("Main")
+
 -- Services
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
