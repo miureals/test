@@ -1,7 +1,3 @@
---  🌸 MiuHub Universal Loader 🌸
--- Script by Miu | only for learning 
--- This loader will run the script that matches the placeid
-
 local repo = "https://raw.githubusercontent.com/miureals/test/refs/heads/main/"
 local PlaceId = game.PlaceId
 
