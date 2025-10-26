@@ -14,7 +14,7 @@ local JumpValue = 50
 -- window
 local Window = Rayfield:CreateWindow({
     Name = "MiuHub",
-    Icon = 78684919697778,
+    Icon = 126331734300608,
     LoadingTitle = "Wellcome To A Miuhub",
     LoadingSubtitle = "This Script only for a learn",
     LoadingSubtitle = "By Miu",
@@ -27,7 +27,7 @@ local Window = Rayfield:CreateWindow({
 -- save Configuration 
     ConfigurationSaving = {
       Enabled = false,
-      FolderName = nil, -- Create folder for your hub/game
+      FolderName = MiuHub, -- Create folder for your hub/game
       FileName = "Big Hub"
    },
 
@@ -44,34 +44,38 @@ local Window = Rayfield:CreateWindow({
     }
 })
 
+Rayfield:Notify({
+   Title = "MiuHub it sucks",
+   Content = "Fuck up miu hub",
+   Duration = 3,
+   Image = nil,
+})
+
+local PlayerTab = Window:CreateTab("🏠Home🏠")
+local section = PlayerTab:CreateSection("Main")
+
 -- Services
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local player = Players.LocalPlayer
 
--- Home Tab
-local PlayerTab = Window:CreateTab("🏠Home🏠")
-local SectionHome = PlayerTab:CreateSection("Main")
-
--- Variables
-local SpeedEnabled = false
 local SpeedValue = 16
-local SmoothFactor = 0.01 -- the smaller the smoother the movement 
+local SpeedEnabled = false
+local SmoothFactor = 10 -- nilai smoothing (semakin besar makin responsif)
 
--- Slider untuk Speed
+-- UI
 local WalkSpeedSlider = PlayerTab:CreateSlider({
     Name = "WalkSpeed",
     Range = {16, 300},
     Increment = 1,
     Suffix = "Speed",
-    CurrentValue = 16,
+    CurrentValue = SpeedValue,
     Flag = "WalkSpeedSlider",
     Callback = function(Value)
         SpeedValue = Value
     end
 })
 
--- Speed
 local WalkSpeedToggle = PlayerTab:CreateToggle({
     Name = "Enable WalkSpeed",
     CurrentValue = false,
@@ -81,6 +85,7 @@ local WalkSpeedToggle = PlayerTab:CreateToggle({
     end
 })
 
+-- ambil bagian karakter
 local function getCharParts()
     local char = player.Character
     if not char then return end
@@ -93,6 +98,7 @@ end
 
 local velocity = Vector3.zero
 
+-- loop utama
 RunService.RenderStepped:Connect(function(dt)
     if not SpeedEnabled then
         velocity = Vector3.zero
@@ -105,14 +111,16 @@ RunService.RenderStepped:Connect(function(dt)
     local moveDir = humanoid.MoveDirection
     if moveDir.Magnitude > 0 then
         local targetVelocity = moveDir.Unit * SpeedValue
-        velocity = velocity:Lerp(targetVelocity, SmoothFactor)
+        velocity = velocity:Lerp(targetVelocity, math.clamp(SmoothFactor * dt, 0, 1))
     else
-        velocity = velocity:Lerp(Vector3.zero, SmoothFactor * 1.5)
+        velocity = velocity:Lerp(Vector3.zero, math.clamp(SmoothFactor * dt * 1.5, 0, 1))
     end
 
+    -- update posisi player
     root.CFrame = root.CFrame + (velocity * dt)
 end)
 
+-- reset velocity saat respawn
 player.CharacterAdded:Connect(function(char)
     char:WaitForChild("HumanoidRootPart")
     char:WaitForChild("Humanoid")
@@ -209,7 +217,7 @@ local function createNameTag(player)
     local nameLabel = Instance.new("TextLabel")
     nameLabel.Size = UDim2.new(1, 0, 0, 15)
     nameLabel.BackgroundTransparency = 1
-    nameLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
+    nameLabel.TextColor3 = Color3.fromRGB(200, 0, 0)
     nameLabel.TextStrokeTransparency = 0.5
     nameLabel.Font = Enum.Font.SourceSansBold
     nameLabel.TextScaled = false
@@ -220,7 +228,7 @@ local function createNameTag(player)
     local healthLabel = Instance.new("TextLabel")
     healthLabel.Size = UDim2.new(1, 0, 0, 20)
     healthLabel.BackgroundTransparency = 1
-    healthLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
+    healthLabel.TextColor3 = Color3.fromRGB(180, 0, 255)
     healthLabel.TextStrokeTransparency = 0.5
     healthLabel.Font = Enum.Font.SourceSansBold
     healthLabel.TextScaled = false
@@ -231,7 +239,7 @@ local function createNameTag(player)
     local distanceLabel = Instance.new("TextLabel")
     distanceLabel.Size = UDim2.new(1, 0, 0, 20)
     distanceLabel.BackgroundTransparency = 1
-    distanceLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    distanceLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
     distanceLabel.TextStrokeTransparency = 0.5
     distanceLabel.Font = Enum.Font.SourceSansBold
     distanceLabel.TextScaled = false
@@ -290,3 +298,26 @@ EspTab:CreateToggle({
 })
 
 local testTab = Window:CreateTab("Bloxfruit Its Sucks")
+local test = testTab:CreateSection("test")
+local Toggle = testTab:CreateToggle({
+   Name = "Toggle Test",
+   CurrentValue = false,
+   Flag = "test", 
+   Callback = function(Value)
+            
+   end,
+})
+
+local play = testTab:CreateSection("main")
+local lier = testTab:CreateSlider({
+   Name = "Slider Example",
+   Range = {0, 100},
+   Increment = 10,
+   Suffix = "Bananas",
+   CurrentValue = 10,
+   Flag = "dh", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+   -- The function that takes place when the slider changes
+   -- The variable (Value) is a number which correlates to the value the slider is currently at
+   end,
+})
