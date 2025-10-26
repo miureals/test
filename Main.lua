@@ -1,4 +1,4 @@
--- Miuhub (GraceHub) by Miu
+-- Miuhub (MiuHub) by Miu
 -- ⚠️ For learning purpose only
 
 -- // Library
@@ -26,11 +26,11 @@ local JumpValue = 50
 
 -- // Window
 local Window = Rayfield:CreateWindow({
-    Name = "GraceHub",
+    Name = "MiuHub",
     Icon = 78684919697778,
     LoadingTitle = "Welcome to GraceHub",
     LoadingSubtitle = "By Miu",
-    ShowText = "GraceHub",
+    ShowText = "MiuHub",
     Theme = "Amethyst",
     ToggleUIKeybind = "K",
     DisableRayfieldPrompts = false,

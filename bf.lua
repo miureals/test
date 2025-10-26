@@ -157,7 +157,7 @@ RunService.Heartbeat:Connect(function()
     if JumpEnabled then
         local _, _, humanoid = getCharParts()
         if humanoid then
-            pcall(function() humanoid.JumpPower = JumpValue end)
+	a		a	            pcall(function() humanoid.JumpPower = JumpValue end)
         end
     end
 end)
