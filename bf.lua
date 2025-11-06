@@ -1,6 +1,6 @@
 -- Miuhub is only for learning, so don't misuse it.
 -- Script by Miu
--- Library my Rayfield
+-- Library by Rayfield
 
 
 
