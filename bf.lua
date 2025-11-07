@@ -32,15 +32,15 @@ local Window = Rayfield:CreateWindow({
    },
 
 -- for key sistem (if you want use key for your script change to true in "KeySystem")
-    KeySystem = false,
+    KeySystem = true,
     KeySettings = {
-        Title = "Untitled",
+        Title = "miuhub Key, this only lerning",
         Subtitle = "Key System",
-        Note = "No method of obtaining the key is provided",
+        Note = "get in that link",
         FileName = "Key",
-        SaveKey = true,
-        GrabKeyFromSite = false,
-        Key = {"Hello"}
+        SaveKey = nil,
+        GrabKeyFromSite = true,
+        Key = "https://pastebin.com/raw/7gRS3EBh"
     }
 })
 
